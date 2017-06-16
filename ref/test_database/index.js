@@ -40,9 +40,20 @@ app.post('/insert', function(req, res) {
 
 	console.log(name,lat,long);
 	
-	console.log("I'm here");
 	db.run("INSERT INTO players VALUES (?,?,?)", name, lat, long);
 
+	res.send(true);
+});
+
+app.post('/update', function(req, res) {
+	console.log(req.body);
+
+	let name = req.body['name'],
+	lat = req.body['pos'].lat,
+	long = req.body['pos'].long;
+
+	console.log(name,lat,long);
+	db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
 	res.send(true);
 });
 
