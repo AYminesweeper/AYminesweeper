@@ -23,25 +23,7 @@
       function initMap() {
           // 緯度・経度を変数に格納
           //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
-          //var centerposition = new google.maps.LatLng(36.109651, 140.101704);
-          $( function() {
-          			$( '#insert' ) .click(
-          				function() {
-          					var hostUrl= '/insert';
-          					$.ajax({
-          						url: hostUrl,
-          						type:'POST',
-          						dataType: 'json',
-          						data : {"name" : "person1", "pos" : {"lat":10.00001, "long":10.00001}},
-          						//timeout:10000,
-          					}).done(function(data) {
-          						console.log("ok");
-          						console.log(data);
-          					}).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-          						alert("error");
-          					})
-          				});
-          		} );
+          var centerposition = new google.maps.LatLng(36.109651, 140.101704);
 
           // マップオプションを変数に格納
           var mapOptions = {
@@ -60,7 +42,26 @@
           startWatchPosition();
       }
 
-      function receive(){
+      $( function() {
+            $( '#insert' ) .click(
+              function() {
+                var hostUrl= '/insert';
+                $.ajax({
+                  url: hostUrl,
+                  type:'POST',
+                  dataType: 'json',
+                  data : {"name" : "person1", "pos" : {"lat":10.00001, "long":10.00001}},
+                  //timeout:10000,
+                }).done(function(data) {
+                  console.log("ok");
+                  console.log(data);
+                }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+                  alert("error");
+                })
+              });
+          } );
+
+      /*function receive(){
         $.ajax({
           // url: "http://192.168.17.140:8887/data.json",
           // url: "https://pullpulldondon.github.io/pos.json",
@@ -74,7 +75,7 @@
             console.log("ERROR");
           }
         });
-      }
+      }*/
 
       /*function sendPosData(pos){
         if(name === "") return;
