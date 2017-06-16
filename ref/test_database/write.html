@@ -5,11 +5,19 @@
 	<title>test</title>
 </head>
 <body>
+<<<<<<< HEAD
 <button id="ajax-button">送信</button>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
 	<script type="text/javascript">
 		$( function() {
 			$( '#ajax-button' ) .click(
+=======
+<button id="insert">送信(insert)</button>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		$( function() {
+			$( '#insert' ) .click(
+>>>>>>> d8bf2e484efec713e6ba58c50450553ea61e022e
 				function() {
 					var hostUrl= '/insert';
 
@@ -30,5 +38,33 @@
 		} );
 	</script>
 
+<<<<<<< HEAD
+=======
+	<button id="update">送信(update)</button>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		$( function() {
+			$( '#update' ) .click(
+				function() {
+					var hostUrl= '/update';
+
+
+					$.ajax({
+						url: hostUrl,
+						type:'POST',
+						dataType: 'json',
+						data : {"name" : "person1", "pos" : {"lat":22.2222, "long":22.2222}},
+						//timeout:10000,
+					}).done(function(data) {
+						console.log("ok");
+						console.log(data);
+					}).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+						alert("error");
+					})
+				});
+		} );
+	</script>
+
+>>>>>>> d8bf2e484efec713e6ba58c50450553ea61e022e
 </body>
 </html>
