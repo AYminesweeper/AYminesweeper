@@ -16,13 +16,15 @@ app.set('view engine', 'ejs');
 
 app.get('/', function(req, res) {
 	//let players = Player.objects('Player');
-	db.all("SELECT * FROM players",function(err, rows){
+	/*db.all("SELECT * FROM players",function(err, rows){
       if (!err) {
         res.render('index.ejs', {
         	players : rows
         }); 
       }   
     }); 
+    */
+	res.sendFile(__dirname + "/index.html");
 	//res.render('index.ejs', {players: players});
 });
 
