@@ -57,5 +57,30 @@
 		} );
 	</script>
 
+	<button id="receive">受信</button>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		$( function() {
+			$( '#receive' ) .click(
+				function() {
+					var hostUrl= '/receive';
+
+
+					$.ajax({
+						url: hostUrl,
+						type:'POST',
+						dataType: 'json',
+						//data : {"name" : "person1", "pos" : {"lat":22.2222, "long":22.2222}},
+						//timeout:10000,
+					}).done(function(data) {
+						console.log("ok");
+						console.log(data);
+					}).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+						alert("error");
+					})
+				});
+		} );
+	</script>
+
 </body>
 </html>

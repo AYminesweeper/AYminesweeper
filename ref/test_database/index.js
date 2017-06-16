@@ -57,9 +57,21 @@ app.post('/update', function(req, res) {
 	res.send(true);
 });
 
+app.post('/receive', function(req, res) {
+	let name, lat, long;
+	console.log("I'm here.")
+	db.all("SELECT * FROM players", 
+		function (err, rows) {
+			console.log(rows);
+			res.json(rows);
+             if (err) throw err;
+         });
+});
+
 app.use(function (req, res, next) {
 	res.status(404).send("File not found");
 });
+
 
 
 app.listen(3000, function() {
