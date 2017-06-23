@@ -49,7 +49,7 @@ app.post('/insert', function(req, res) {
 
 app.post('/update', function(req, res) {
 	console.log(req.body);
-
+  console.log("I'm here.")
 	let name = req.body['name'],
 	lat = req.body['pos'].lat,
 	long = req.body['pos'].long;
@@ -61,7 +61,6 @@ app.post('/update', function(req, res) {
 
 app.post('/receive', function(req, res) {
 	let name, lat, long;
-	console.log("I'm here.")
 	db.all("SELECT * FROM players", 
 		function (err, rows) {
 			console.log(rows);
