@@ -1,20 +1,13 @@
-'use strict'
-
-
 var express = require('express'),
     bodyParser = require('body-parser');
 
 var sqlite3 = require('sqlite3').verbose();   
 var db = new sqlite3.Database('db.sqlite3');
+var path = require('path');
 
+var router = express.Router();
 
-var app = express();
-app.use(bodyParser.urlencoded({extended: true}));
-app.set('view engine', 'ejs');
-
-
-
-app.get('/', function(req, res) {
+router.get('/', function(req, res) {
 	//let players = Player.objects('Player');
 	/*db.all("SELECT * FROM players",function(err, rows){
       if (!err) {
@@ -24,16 +17,16 @@ app.get('/', function(req, res) {
       }   
     }); 
     */
-	res.sendFile(__dirname + "/index.html");
+	res.sendFile(path.resolve("./index.html"));  //path.resolve()で./index.htmlを絶対パスに変換
 	//res.render('index.ejs', {players: players});
 });
 
 
-app.get('/write', function(req, res) {
-	res.sendFile(__dirname + "/write.html");
+router.get('/write', function(req, res) {
+	res.sendFile(path.resolve("./write.html"));
 });
 
-app.post('/insert', function(req, res) {
+router.post('/insert', function(req, res) {
 	console.log(req.body);
 
 	let name = req.body['name'],
@@ -47,7 +40,7 @@ app.post('/insert', function(req, res) {
 	res.send(true);
 });
 
-app.post('/update', function(req, res) {
+router.post('/update', function(req, res) {
 	console.log(req.body);
 
 	let name = req.body['name'],
@@ -59,7 +52,7 @@ app.post('/update', function(req, res) {
 	res.send(true);
 });
 
-app.post('/receive', function(req, res) {
+router.post('/receive', function(req, res) {
 	let name, lat, long;
 	console.log("I'm here.")
 	db.all("SELECT * FROM players", 
@@ -70,13 +63,4 @@ app.post('/receive', function(req, res) {
          });
 });
 
-app.use(function (req, res, next) {
-	res.status(404).send("File not found");
-});
-
-
-
-app.listen(3000, function() {
-	console.log("Go!");
-});
-
+module.exports = router;
