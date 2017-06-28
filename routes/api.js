@@ -81,7 +81,7 @@ function convertRelative (pos){
 
 /* 相対座標から現在のマスの座標を取得 */
 function getSquarePos (R_pos) {
-	return ["lat" : Math.floor(R_pos.lat/square_size), "long" : Math.floor(R_pos.long/square_size)];
+	return {"lat" : Math.floor(R_pos.lat/square_size), "long" : Math.floor(R_pos.long/square_size)};
 }
 
 function isBomb (SquarePos) {
