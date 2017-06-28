@@ -20,7 +20,7 @@ router.get('/write', function(req, res) {
 });
 
 router.post('/insert', function(req, res) {
-	console.log("I'm in insert.")
+	console.log("I'm in insert.");
 
 	let name = req.body['name'],
 		lat = req.body['pos'].lat,
@@ -39,6 +39,7 @@ router.post('/update', function(req, res) {
 	long = req.body['pos'].long;
 
 	console.log(req.body['pos']);
+	console.log(convertRelative(req.body['pos']));
 
 	db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
 	res.send(true);
@@ -47,10 +48,10 @@ router.post('/update', function(req, res) {
 
 /* 座標を相対座標へ変換 */
 function convertRelative (pos){
-	var lat = pos.lat;
-	var long = pos.long;
+	var R_lat = pos.lat - baseX;
+	var R_long = pos.long - baseY;
 
-
+	return {"lat": R_lat, "long": R_long};
 }
 
 function isInside (pos) {
