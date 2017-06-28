@@ -1,6 +1,6 @@
-ref/test_database/db.sqlite3
-AYminesweeper/node_modules/*
 # General
 *.DS_Store
 .AppleDouble
 .LSOverride
+ref/test_database/db.sqlite3
+AYminesweeper/node_modules/*
