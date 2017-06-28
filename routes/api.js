@@ -64,7 +64,9 @@ router.post('/update', function(req, res) {
 
 
 	//console.log(req.body['pos']);
-	console.log(getSquarePos(R_pos));
+	console.log(isMine(getSquarePos(R_pos)));
+	field[1][1] = 1;
+	console.log(isMine({x:1,y:1}));
 
 	db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
 	res.send(true);
@@ -76,16 +78,22 @@ function convertRelative (pos){
 	var R_lat = pos.lat - baseX;
 	var R_long = pos.long - baseY;
 
-	return {"lat": R_lat, "long": R_long};
+	return {"x": R_lat, "y": R_long};
 }
 
 /* 相対座標から現在のマスの座標を取得 */
 function getSquarePos (R_pos) {
-	return {"lat" : Math.floor(R_pos.lat/square_size), "long" : Math.floor(R_pos.long/square_size)};
+	return {"x" : Math.floor(R_pos.x/square_size), "y" : Math.floor(R_pos.y/square_size)};
 }
 
-function isBomb (SquarePos) {
-	//return field[]
+/* 現在のxy座標か地雷かどうか */
+function isMine (SquarePos) {
+	let num = field_size/square_size; //ライン内のマスの数
+
+	if(SquarePos.x < num && SquarePos.y < num)
+		return field[SquarePos.x][SquarePos.y] == 1;
+
+	return false;
 }
 
 router.post('/receive', function(req, res) {
