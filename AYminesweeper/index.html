@@ -42,18 +42,11 @@
           //markPos(pos_data);
           startWatchPosition();
 
-          //setting
-          var cell = 10;  //マスの数
-          var high = 36.10990;  //上辺の緯度
-          var low = 36.109427;  //下辺の緯度
-          var left = 140.101350;  //左辺の経度
-          var right = 140.102044;  //右辺の経度
-
-
-
-
+          var cell = 8;
           var length = cell*2+2;
-          var points1 = new Array(length);
+          var points1 = new Array(18);
+          var high = 36.10990;
+          var low = 36.109427;
           var points1_lat = new Array(points1.length);
           points1_lat[0] = high;
           var points1_lng = new Array(points1.length);
@@ -68,12 +61,14 @@
             }
           }
 
-          var space1 = (right-left)/cell;
+          var left = 140.101350;
+          var right = 140.102044;
+          var space = (right-left)/cell;
           var n = left;
           for(var i = 0; i < points1.length; i+=2) {
             points1_lng[i] = n;
             points1_lng[i+1] = n;
-            n += space1;
+            n += space;
           }
 
           for(i = 0; i < points1.length; i++) {
@@ -81,6 +76,8 @@
             var lng = points1_lng[i];
             points1[i] = new google.maps.LatLng(lat, lng);
           }
+
+          var points2_
 
           /*var points1 = [
             new google.maps.LatLng(36.109900, 140.101350),
@@ -103,38 +100,7 @@
             new google.maps.LatLng(36.109427, 140.10204400)
           ]*/
 
-          var points2 = new Array(length);
-          var points2_lat = new Array(length);
-          var points2_lng = new Array(length);
-          points2_lng[0] = left;
-
-          var m = right;
-          for(var i = 1; i < length; i += 2) {
-            points2_lng[i] = m;
-            points2_lng[i+1] = m;
-            if (m == left) {
-              m = right;
-            } else {
-              m = left
-            }
-          }
-
-          var space2 = (high-low)/cell;
-          var m = high;
-          for (var i = 0; i < length; i += 2) {
-            points2_lat[i] = m;
-            points2_lat[i+1] = m;
-            m -= space2;
-          }
-
-          for (var i = 0; i < length; i++) {
-            points2[i] = new google.maps.LatLng(points2_lat[i], points2_lng[i]);
-          }
-
-          //console.log(space1);
-          //console.log(space2);
-
-          /*var points2 = [
+          var points2 = [
             new google.maps.LatLng(36.109900, 140.101350),
             new google.maps.LatLng(36.109900, 140.102044),
             new google.maps.LatLng(36.109840875, 140.102044),
@@ -153,7 +119,7 @@
             new google.maps.LatLng(36.109486125, 140.101350),
             new google.maps.LatLng(36.109427, 140.101350),
             new google.maps.LatLng(36.109427, 140.102044)
-          ]*/
+          ]
 
           var PolylineOptions1 = {
             map: map,
@@ -176,32 +142,6 @@
 
           var poly2 = new google.maps.Polyline(PolylineOptions2);
           poly2.setMap(map);
-
-
-          var lat_array = new Array(cell);
-          var lng_array = new Array(cell);
-          lat_array[0] = high;
-          lng_array[0] = left;
-          var index = 1;
-          for (var i = 3; i < length; i +=4) {
-            lat_array[index] = points2_lat[i];
-            lat_array[index+1] = points2_lat[i+1];
-            lng_array[index] = points1_lng[i];
-            lng_array[index+1] = points1_lng[i+1];
-
-            index += 2;
-          }
-
-          /*var myposition = (36.1097816, 140.102041);
-          var position[];
-          for (var i = 0; i < cell; i++) {
-            position
-          }
-
-          for (i = 0; i < index; i++) {
-            if myposition
-          }*/
-
       }
 
       $( function() {
