@@ -46,12 +46,16 @@ router.post('/update', function(req, res) {
 
 
 	var R_pos = convertRelative(req.body['pos']);
+	console.log(req.body['pos']);
+	console.log(R_pos);
+	console.log(getSquarePos(R_pos));
 
 
 	//console.log(req.body['pos']);
-	console.log(isMine(getSquarePos(R_pos)));
-	field[1][1] = 1;
-	console.log(isMine({x:1,y:1}));
+	//console.log(isMine(getSquarePos(R_pos)));
+	//field[1][1] = 1;
+	//console.log(isMine({x:1,y:1}));
+
 
 	db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
 	res.send(true);
@@ -62,7 +66,7 @@ router.post('/receive', function(req, res) {
 	let name, lat, long;
 	db.all("SELECT * FROM players", 
 		function (err, rows) {
-			console.log(rows);
+			//console.log(rows);
 			res.json(rows);
              if (err) throw err;
          });
@@ -83,15 +87,15 @@ function createField(){
 
 /* 座標を相対座標へ変換 */
 function convertRelative (pos){
-	var R_lat = pos.lat - baseX;
-	var R_long = pos.long - baseY;
+	var R_long = pos.long - baseX;
+	var R_lat = pos.lat - baseY;
 
-	return {"x": R_lat, "y": R_long};
+	return {"x": R_long, "y": R_lat};
 }
 
 /* 相対座標から現在のマスの座標を取得 */
 function getSquarePos (R_pos) {
-	return {"x" : Math.floor(R_pos.x/square_sizeX), "y" : Math.floor(R_pos.y/square_sizeY)};
+	return {"x" : Math.floor(R_pos.x/square_sizeX), "y" : -1*Math.floor(R_pos.y/square_sizeY)};
 }
 
 /* 現在のxy座標か地雷かどうか */

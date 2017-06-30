@@ -15,9 +15,9 @@
     <div id="map"></div>
     <button id="update">送信(update)</button>
     <!-- お名前：<input type="text" id="cojtid" placeholder="入れたら自動でJSが認識します" /> -->
-    <form name="js">
+    <form name="input_name">
     player name：<input type="text" name="p_name" value=""><br>
-    <input type="button" id="insert" value="決定!" onclick="insert()"><br>
+    <input type="button" id="insert" value="決定!" ><br>
     </form>
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
@@ -209,15 +209,17 @@
 
       }
 
-      $( function() {
+      $( function insert() {
+        console.log($('#insert'));
             $( '#insert' ) .click(
               function() {
                 var hostUrl= '/insert';
+                var name = document.input_name.p_name.value;
                 $.ajax({
                   url: hostUrl,
                   type:'POST',
                   dataType: 'json',
-                  data :{"name" : "person1", "pos" : {"lat":10.00001, "long":10.00001}},
+                  data :{"name" : name, "pos" : {"lat":10.00001, "long":10.00001}},
                   //timeout:10000,
                 }).done(function(data) {
                   console.log("ok");
