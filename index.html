@@ -29,14 +29,14 @@
       function initMap() {
           // 緯度・経度を変数に格納
           //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
-          var centerposition = new google.maps.LatLng(36.109651, 140.101704);
+          var centerposition = new google.maps.LatLng(36.110732, 140.100619);
 
           // マップオプションを変数に格納
           var mapOptions = {
-              zoom : 20,
+              zoom : 18,
               center : centerposition,  // 中心は現在地の緯度・経度
               scrollwheel : false,
-              draggable : false,
+              //draggable : false,
               rotateControl : true,
           };
           // マップオブジェクト作成
@@ -49,10 +49,10 @@
 
           //setting
           var cell = 10;  //マスの数
-          var high = 36.10990;  //上辺の緯度
-          var low = 36.109427;  //下辺の緯度
-          var left = 140.101350;  //左辺の経度
-          var right = 140.102044;  //右辺の経度
+          var high = 36.11204;  //左上点の緯度
+          var low = 36.109698;  //右下点の緯度
+          var left = 140.09901;  //左上点の経度
+          var right = 140.102199;  //右下点の経度
 
 
 
@@ -197,13 +197,17 @@
             index += 2;
           }
 
-          /*var myposition = (36.1097816, 140.102041);
-          var position[];
+          var myposition = (36.1097816, 140.102041);
+          var position = new Array();
           for (var i = 0; i < cell; i++) {
-            position
+            position[i] = new Array();
+            for (var j = 0; j < cell; j++) {
+              position[i][j] = 0;
+            }
           }
+          console.log(position);
 
-          for (i = 0; i < index; i++) {
+          /*for (i = 0; i < index; i++) {
             if myposition
           }*/
 
