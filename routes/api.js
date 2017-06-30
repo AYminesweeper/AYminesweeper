@@ -7,11 +7,11 @@ var path = require('path');
 
 var router = express.Router();
 
-var baseX = 0; //フィールドの左上の端の座標
-var baseY = 0;
-
-var square_size = 10; //一マスのサイズ
-var field_size = 100; //フィールドサイズ
+var baseX = 140.101350; //フィールドの左上の端の座標
+var baseY = 36.1099;
+var square_num = 10; //1ライン内のマスの数
+var square_sizeX = 0.00006940000000099644; //1マスのx座標サイズ
+var square_sizeY = 0.000047300000000660704; //2マスのy座標サイズ
 
 var field = createField();
 
@@ -20,21 +20,6 @@ console.log(field);
 router.get('/', function(req, res) {
 	res.sendFile(path.resolve("./index.html"));  //path.resolve()で./index.htmlを絶対パスに変換
 });
-
-
-function createField(){
-	var x, y;
-	var tbl = new Array(field_size/square_size);
-	for(y = 0; y < field_size/square_size; y++) {
- 		tbl[y] = new Array(field_size/square_size);
-  		for(x = 0; x < field_size/square_size; x++) {
-   	 		tbl[y][x] = 0;
- 		}
-	}
-	return tbl;
-}
-
-
 
 router.get('/write', function(req, res) {
 	res.sendFile(path.resolve("./write.html"));
@@ -73,6 +58,29 @@ router.post('/update', function(req, res) {
 
 });
 
+router.post('/receive', function(req, res) {
+	let name, lat, long;
+	db.all("SELECT * FROM players", 
+		function (err, rows) {
+			console.log(rows);
+			res.json(rows);
+             if (err) throw err;
+         });
+});
+
+function createField(){
+	var x, y;
+	var tbl = new Array(square_num);
+	
+	for(y = 0; y < square_num; y++) {
+ 		tbl[y] = new Array(square_num);
+  		for(x = 0; x < square_num; x++) {
+   	 		tbl[y][x] = 0;
+ 		}
+	}
+	return tbl;
+}
+
 /* 座標を相対座標へ変換 */
 function convertRelative (pos){
 	var R_lat = pos.lat - baseX;
@@ -83,7 +91,7 @@ function convertRelative (pos){
 
 /* 相対座標から現在のマスの座標を取得 */
 function getSquarePos (R_pos) {
-	return {"x" : Math.floor(R_pos.x/square_size), "y" : Math.floor(R_pos.y/square_size)};
+	return {"x" : Math.floor(R_pos.x/square_sizeX), "y" : Math.floor(R_pos.y/square_sizeY)};
 }
 
 /* 現在のxy座標か地雷かどうか */
@@ -96,14 +104,5 @@ function isMine (SquarePos) {
 	return false;
 }
 
-router.post('/receive', function(req, res) {
-	let name, lat, long;
-	db.all("SELECT * FROM players", 
-		function (err, rows) {
-			console.log(rows);
-			res.json(rows);
-             if (err) throw err;
-         });
-});
 
 module.exports = router;

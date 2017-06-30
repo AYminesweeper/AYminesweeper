@@ -13,8 +13,13 @@
   </head>
   <body>
     <div id="map"></div>
-    <button id="insert">送信(insert)</button>
     <button id="update">送信(update)</button>
+    <!-- お名前：<input type="text" id="cojtid" placeholder="入れたら自動でJSが認識します" /> -->
+    <form name="js">
+    player name：<input type="text" name="p_name" value=""><br>
+    <input type="button" id="insert" value="決定!" onclick="insert()"><br>
+    </form>
+
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <script type="text/javascript">
@@ -394,6 +399,7 @@
 
       initMap();
       setInterval(receive.bind(this), 5000);
+      setInterval(sendPosData.bind(this), 5000);
     </script>
   </body>
 </html>
