@@ -18,6 +18,10 @@ setMine(4, 8);
 console.log(field);
 
 router.get('/', function(req, res) {
+	res.sendFile(path.resolve("./menu.html"));  //path.resolve()で./insert.htmlを絶対パスに変換
+});
+
+router.get('/insert', function(req, res) {
 	res.sendFile(path.resolve("./insert.html"));  //path.resolve()で./insert.htmlを絶対パスに変換
 });
 

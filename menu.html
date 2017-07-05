@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<link href='https://fonts.googleapis.com/css?family=Merriweather:400,700|Merriweather+Sans' rel='stylesheet' type='text/css'>
+	
+	<link rel="stylesheet" href="stylesheets/reset.css"> <!-- CSS reset -->
+	<link rel="stylesheet" href="stylesheets/style.css"> <!-- Resource style -->
+  	
+	<title>Bomb</title>
+</head>
+<body class="extinguisher-transition">
+<main class="cd-main-content">
+	<div class="center">
+		<h1>Real Bomb!!</h1>
+		<a href="#modal-1" class="cd-btn cd-modal-trigger">Game Start!!</a>
+	</div>
+</main> <!-- .cd-main-content -->
+
+<div class="cd-modal" id="modal-1">
+	<div class="modal-content">
+		<h2>Mode Select</h2>
+		
+		<div class="mode">
+			<center>
+				<a href="/insert" class="cd-btn">
+					Defender
+				</a>
+			</center>
+		</div>
+
+		<div class="mode">
+			<center>
+				<a href="/" class="cd-btn">
+					Attacker
+				</a>
+			</center>
+		</div>
+	</div> <!-- .modal-content -->
+
+	<a href="#0" class="modal-close">Close</a>
+</div> <!-- .cd-modal -->
+
+<div class="cd-transition-layer" data-frame="25"> 
+	<div class="bg-layer"></div>
+</div> <!-- .cd-transition-layer -->
+
+<script src="javascripts/modernizr.js"></script> <!-- Modernizr -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script>
+	if( !window.jQuery ) document.write('<script src="javascripts/jquery-2.2.1-min.js"><\/script>');
+</script>
+<script src="javascripts/main.js"></script> <!-- Resource jQuery -->
+
+</body>
+</html>
