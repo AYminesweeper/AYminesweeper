@@ -25,13 +25,11 @@ router.get('/index*', function(req, res) {
 	res.sendFile(path.resolve("./index.html"));  //path.resolve()で./index.htmlを絶対パスに変換
 });
 
-<<<<<<< HEAD
-=======
 router.get('/delete', function(req, res) {
 	db.run("DELETE FROM players");
 });
 
->>>>>>> b6658b2e42bad96b8488f047155eab917c09d72d
+
 router.post('/set', function(req, res) {
 	console.log("I'm in insert.");
 	let x = req.body['x'],
@@ -47,13 +45,8 @@ router.post('/insert', function(req, res) {
 	let name = req.body['name'],
 		lat = req.body['pos'].lat,
 		long = req.body['pos'].long;
-<<<<<<< HEAD
-
-	db.run("INSERT INTO players VALUES (?,?,?)", name, lat, long);
-=======
 	
 	db.run("INSERT INTO players VALUES (?,?,?,?)", name, lat, long, 1);
->>>>>>> b6658b2e42bad96b8488f047155eab917c09d72d
 
 	res.send(true);
 });
