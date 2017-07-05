@@ -19,7 +19,11 @@ router.get('/', function(req, res) {
 	res.sendFile(path.resolve("./index.html"));  //path.resolve()で./index.htmlを絶対パスに変換
 });
 
-router.get('/set', function(req, res) {
+router.get('/delete', function(req, res) {
+	db.run("DELETE FROM players");
+});
+
+router.post('/set', function(req, res) {
 	console.log("I'm in insert.");
 	let x = req.body['x'],
 	    y = req.body['y'];
@@ -35,7 +39,7 @@ router.post('/insert', function(req, res) {
 		lat = req.body['pos'].lat,
 		long = req.body['pos'].long;
 	
-	db.run("INSERT INTO players VALUES (?,?,?)", name, lat, long);
+	db.run("INSERT INTO players VALUES (?,?,?,?)", name, lat, long, 1);
 
 	res.send(true);
 });

@@ -2,5 +2,4 @@
 *.DS_Store
 .AppleDouble
 .LSOverride
-db.sqlite3
 node_modules/*
