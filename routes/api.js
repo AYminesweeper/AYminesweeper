@@ -14,7 +14,7 @@ var square_sizeX = 0.00031890000000203147; //1マスのx座標サイズ
 var square_sizeY = 0.0002341999999998734; //2マスのy座標サイズ
 
 var field = createField();
-setMine(4, 7);
+setMine(6, 7);
 console.log(field);
 
 router.get('/', function(req, res) {
