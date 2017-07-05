@@ -7,22 +7,25 @@ var path = require('path');
 
 var router = express.Router();
 
-var baseX = 140.101350; //フィールドの左上の端の座標
-var baseY = 36.1099;
+var baseX = 140.09901; //フィールドの左上の端の座標
+var baseY = 36.11204;
 var square_num = 10; //1ライン内のマスの数
-var square_sizeX = 0.00006940000000099644; //1マスのx座標サイズ
-var square_sizeY = 0.000047300000000660704; //2マスのy座標サイズ
+var square_sizeX = 0.00031890000000203147; //1マスのx座標サイズ
+var square_sizeY = 0.0002341999999998734; //2マスのy座標サイズ
 
 var field = createField();
-
-console.log(field);
 
 router.get('/', function(req, res) {
 	res.sendFile(path.resolve("./index.html"));  //path.resolve()で./index.htmlを絶対パスに変換
 });
 
-router.get('/write', function(req, res) {
-	res.sendFile(path.resolve("./write.html"));
+router.get('/set', function(req, res) {
+	console.log("I'm in insert.");
+	let x = req.body['x'],
+	    y = req.body['y'];
+
+	setMine(x, y);
+	console.log(field);
 });
 
 router.post('/insert', function(req, res) {
@@ -38,7 +41,7 @@ router.post('/insert', function(req, res) {
 });
 
 router.post('/update', function(req, res) {
-	console.log("I'm in update1.");
+	console.log("I'm in update.");
 	//console.log(req.body);
 	let name = req.body['name'],
 		lat = req.body['pos'].lat,
@@ -49,7 +52,6 @@ router.post('/update', function(req, res) {
 	console.log(req.body['pos']);
 	console.log(R_pos);
 	console.log(getSquarePos(R_pos));
-
 
 	//console.log(req.body['pos']);
 	//console.log(isMine(getSquarePos(R_pos)));
@@ -85,17 +87,21 @@ function createField(){
 	return tbl;
 }
 
+function setMine(x, y){
+	field[y][x] = 1;
+}
+
 /* 座標を相対座標へ変換 */
 function convertRelative (pos){
 	var R_long = pos.long - baseX;
 	var R_lat = pos.lat - baseY;
 
-	return {"x": R_long, "y": R_lat};
+	return {"long": R_long, "lat": R_lat};
 }
 
 /* 相対座標から現在のマスの座標を取得 */
 function getSquarePos (R_pos) {
-	return {"x" : Math.floor(R_pos.x/square_sizeX), "y" : -1*Math.floor(R_pos.y/square_sizeY)};
+	return {"x" : Math.floor(R_pos.long/square_sizeX), "y" : -1*Math.floor(R_pos.lat/square_sizeY)};
 }
 
 /* 現在のxy座標か地雷かどうか */
@@ -103,7 +109,7 @@ function isMine (SquarePos) {
 	let num = field_size/square_size; //ライン内のマスの数
 
 	if(SquarePos.x < num && SquarePos.y < num)
-		return field[SquarePos.x][SquarePos.y] == 1;
+		return field[SquarePos.y][SquarePos.x] == 1;
 
 	return false;
 }
