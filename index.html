@@ -48,6 +48,7 @@
       var map;
       var send_pos;
       var name = FORM["name"];
+      
       function initMap() {
           // 緯度・経度を変数に格納
           //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
@@ -294,6 +295,7 @@
           success: function(res){
             console.log("sendPosData: Success");
             console.log(res);
+            if (res['msg'] == 'bomb') alert("Bomb!");
           },
           error: function(res){
             console.log("sendPosData: Error");
@@ -425,10 +427,6 @@
 
         send_pos = {"name" : name, "pos" : {"lat":pos.lat, "long":pos.long}};
 
-        console.log(send_pos);
-        if(send_pos.name != null)
-          sendPosData(send_pos);
-
         var markerOptions = {
           position: pos,
           map: map
@@ -449,6 +447,7 @@
       var position = setBomb(latlng);
       console.log(position);  //爆弾の位置を配列にて表示
       setInterval(receive.bind(this), 5000);
+      console.log(send_pos);
       setInterval(sendPosData.bind(this), 5000);
     </script>
   </body>

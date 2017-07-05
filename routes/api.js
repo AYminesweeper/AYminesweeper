@@ -14,7 +14,7 @@ var square_sizeX = 0.00031890000000203147; //1マスのx座標サイズ
 var square_sizeY = 0.0002341999999998734; //2マスのy座標サイズ
 
 var field = createField();
-setMine(4, 8);
+setMine(6, 7);
 console.log(field);
 
 router.get('/', function(req, res) {
@@ -49,7 +49,7 @@ router.post('/insert', function(req, res) {
 	let name = req.body['name'],
 		lat = req.body['pos'].lat,
 		long = req.body['pos'].long;
-	
+
 	db.run("INSERT INTO players VALUES (?,?,?,?)", name, lat, long, 1);
 
 	res.send(true);
@@ -67,24 +67,25 @@ router.post('/update', function(req, res) {
 	console.log(req.body['pos']);
 	console.log(R_pos);
 	console.log(getSquarePos(R_pos));
-	
-	
+
 	//console.log(req.body['pos']);
 	//console.log(isMine(getSquarePos(R_pos)));
 	//field[1][1] = 1;
 	//console.log(isMine({x:1,y:1}));
 
+	console.log("name:" + name);
 
 	db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
 
-	if(name != null && isMine(getSquarePos(R_pos))){
+	if(isMine(getSquarePos(R_pos))){
 		db.run("UPDATE players SET is_survive = 0 WHERE name = ?", name);
 		console.log("isMine");
-		res.send(1);
+
+		res.json(
+      { msg: "bomb" }
+    );
 	}
-
-	res.send(true);
-
+		res.send();
 });
 
 router.post('/receive', function(req, res) {
