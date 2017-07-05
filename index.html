@@ -6,8 +6,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <style>
     #map {
-      width: 80vw;
+      width: 100vw;
       height: 80vh;
+    }
+    body {
+      margin: 0;
     }
     </style>
   </head>
@@ -43,11 +46,12 @@
 
           // マップオプションを変数に格納
           var mapOptions = {
-              zoom : 18,
+              zoom : 17,
               center : centerposition,  // 中心は現在地の緯度・経度
               scrollwheel : false,
-              //draggable : false,
+              draggable : false,
               rotateControl : true,
+              disableDoubleClickZoom: true,
           };
           // マップオブジェクト作成
           map = new google.maps.Map(
