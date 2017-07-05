@@ -271,20 +271,26 @@
                   content: name,
                   disableAutoPan: true
               }).open(marker.getMap(), marker);
+            }
           }
-      }
 
-      var infoWindow = new google.maps.InfoWindow;
-      /* */
-      function startWatchPosition(){
+          var infoWindow = new google.maps.InfoWindow;
+          /* */
+          function startWatchPosition(){
         //Try HTML5 geolocation.
         if (navigator.geolocation) {
           //get a current position
+
+          var geo_options = {
+            enableHighAccuracy: true
+          };
+
+
           navigator.geolocation.watchPosition(onWatchPosition, function(err) {
             console.log('hell');
             console.log(err);
             handleLocationError(true, infoWindow, map.getCenter());
-          });
+          },geo_options);
         } else {
           //Browser doesnt support Geolocation.
           handleLocationError(false, infoWindow, map.getCenter());
