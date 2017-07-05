@@ -10,23 +10,32 @@
       height: 80vh;
     }
     </style>
+    <script><!--
+      var FORM = new Array();
+      parse();
+
+      function parse() {  
+        var buffer = location.search.substr(1);
+        pairs = buffer.split("&");
+
+        for (var i in pairs) {
+          var pair = pairs[i].split("=");
+          FORM[pair[0]] = unescape(pair[1].replace("+", " "));
+        }
+      }
+      console.log(FORM["name"]);
+    //--></script>
   </head>
   <body>
     <div id="map"></div>
-    <button id="update">送信(update)</button>
-    <!-- お名前：<input type="text" id="cojtid" placeholder="入れたら自動でJSが認識します" /> -->
-    <form name="input_name">
-    player name：<input type="text" name="p_name" value=""><br>
-    <input type="button" id="insert" value="決定!" ><br>
-    </form>
-
+    
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <script type="text/javascript">
 
       var map;
       var send_pos;
-      var name = null;
+      var name = FORM["name"];
       function initMap() {
           // 緯度・経度を変数に格納
           //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
@@ -215,27 +224,6 @@
           }*/
 
       }
-
-      $( function insert() {
-        console.log($('#insert'));
-            $( '#insert' ) .click(
-              function() {
-                var hostUrl= '/insert';
-                name = document.input_name.p_name.value;
-                $.ajax({
-                  url: hostUrl,
-                  type:'POST',
-                  dataType: 'json',
-                  data :{"name" : name, "pos" : {"lat":10.00001, "long":10.00001}},
-                  //timeout:10000,
-                }).done(function(data) {
-                  console.log("ok");
-                  console.log(data);
-                }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-                  alert("error");
-                })
-              });
-          } );
 
       function receive(){
         var hostUrl= '/receive';

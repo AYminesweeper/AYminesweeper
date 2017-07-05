@@ -1,0 +1,42 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body>
+
+    <form name="input_name">
+    player name：<input type="text" name="p_name" value=""><br>
+    <input type="button" id="insert" value="決定!" ><br>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
+    <script type="text/javascript">
+
+      $( function insert() {
+        console.log($('#insert'));
+            $( '#insert' ) .click(
+              function() {
+                var hostUrl= '/insert';
+                name = document.input_name.p_name.value;
+                $.ajax({
+                  url: hostUrl,
+                  type:'POST',
+                  dataType: 'json',
+                  data :{"name" : name, "pos" : {"lat":0.00000, "long":0.00000}},
+                }).done(function(data) {
+                  console.log("ok");
+                  console.log(data);
+                  location.href = "/index?" + "name=" + name;
+                }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+                  alert("error");
+                })
+              });
+          } );
+
+  </script>
+  </body>
+</html>

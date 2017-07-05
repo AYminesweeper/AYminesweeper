@@ -18,6 +18,10 @@ setMine(4, 8);
 console.log(field);
 
 router.get('/', function(req, res) {
+	res.sendFile(path.resolve("./insert.html"));  //path.resolve()で./insert.htmlを絶対パスに変換
+});
+
+router.get('/index*', function(req, res) {
 	res.sendFile(path.resolve("./index.html"));  //path.resolve()で./index.htmlを絶対パスに変換
 });
 
@@ -68,8 +72,8 @@ router.post('/update', function(req, res) {
 
 	db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
 
-	if(isMine(getSquarePos(R_pos))){
-		db.run("UPDATE players SET is_survive = 0, WHERE name = ?", name);
+	if(name != null && isMine(getSquarePos(R_pos))){
+		db.run("UPDATE players SET is_survive = 0 WHERE name = ?", name);
 		console.log("isMine");
 		res.send(1);
 	}
