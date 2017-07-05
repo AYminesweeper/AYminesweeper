@@ -14,11 +14,20 @@ var square_sizeX = 0.00031890000000203147; //1マスのx座標サイズ
 var square_sizeY = 0.0002341999999998734; //2マスのy座標サイズ
 
 var field = createField();
+setMine(4, 8);
+console.log(field);
 
 router.get('/', function(req, res) {
 	res.sendFile(path.resolve("./index.html"));  //path.resolve()で./index.htmlを絶対パスに変換
 });
 
+<<<<<<< HEAD
+=======
+router.get('/delete', function(req, res) {
+	db.run("DELETE FROM players");
+});
+
+>>>>>>> b6658b2e42bad96b8488f047155eab917c09d72d
 router.post('/set', function(req, res) {
 	console.log("I'm in insert.");
 	let x = req.body['x'],
@@ -34,8 +43,13 @@ router.post('/insert', function(req, res) {
 	let name = req.body['name'],
 		lat = req.body['pos'].lat,
 		long = req.body['pos'].long;
+<<<<<<< HEAD
 
 	db.run("INSERT INTO players VALUES (?,?,?)", name, lat, long);
+=======
+	
+	db.run("INSERT INTO players VALUES (?,?,?,?)", name, lat, long, 1);
+>>>>>>> b6658b2e42bad96b8488f047155eab917c09d72d
 
 	res.send(true);
 });
@@ -52,7 +66,8 @@ router.post('/update', function(req, res) {
 	console.log(req.body['pos']);
 	console.log(R_pos);
 	console.log(getSquarePos(R_pos));
-
+	
+	
 	//console.log(req.body['pos']);
 	//console.log(isMine(getSquarePos(R_pos)));
 	//field[1][1] = 1;
@@ -60,6 +75,13 @@ router.post('/update', function(req, res) {
 
 
 	db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
+
+	if(isMine(getSquarePos(R_pos))){
+		db.run("UPDATE players SET is_survive = 0, WHERE name = ?", name);
+		console.log("isMine");
+		res.send(1);
+	}
+
 	res.send(true);
 
 });
@@ -106,9 +128,7 @@ function getSquarePos (R_pos) {
 
 /* 現在のxy座標か地雷かどうか */
 function isMine (SquarePos) {
-	let num = field_size/square_size; //ライン内のマスの数
-
-	if(SquarePos.x < num && SquarePos.y < num)
+	if(SquarePos.x < square_num && SquarePos.y < square_num)
 		return field[SquarePos.y][SquarePos.x] == 1;
 
 	return false;

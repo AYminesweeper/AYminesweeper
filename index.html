@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <style>
     #map {
-      width: 60vw;
+      width: 80vw;
       height: 80vh;
     }
     </style>
@@ -24,81 +24,18 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <script type="text/javascript">
 
-
     //setting
     var cell = 10;  //マスの数
-    var high = 36.11204;  //左上点の緯度 baseY
+    var high = 36.11204;  //左上点の緯度
     var low = 36.109698;  //右下点の緯度
-    var left = 140.09901;  //左上点の経度 baseX
+    var left = 140.09901;  //左上点の経度
     var right = 140.102199;  //右下点の経度
-    var latlng = [36.109899, 140.10176]; //爆弾設置
-
-
-    var length = cell*2+2;
-    var points1 = new Array(length);
-    var points1_lat = new Array(points1.length);
-    points1_lat[0] = high;
-    var points1_lng = new Array(points1.length);
-    var n = low;
-    for(var i = 1; i < points1.length; i+=2) {
-      points1_lat[i] = n;
-      points1_lat[i+1] = n;
-      if(n == high){
-        n = low;
-      } else {
-        n = high;
-      }
-    }
-
-    var space1 = (right-left)/cell;
-    var n = left;
-    for(var i = 0; i < points1.length; i+=2) {
-      points1_lng[i] = n;
-      points1_lng[i+1] = n;
-      n += space1;
-    }
-
-    var points2 = new Array(length);
-    var points2_lat = new Array(length);
-    var points2_lng = new Array(length);
-    points2_lng[0] = left;
-
-    var m = right;
-    for(var i = 1; i < length; i += 2) {
-      points2_lng[i] = m;
-      points2_lng[i+1] = m;
-      if (m == left) {
-        m = right;
-      } else {
-        m = left
-      }
-    }
-
-    var space2 = (high-low)/cell;
-    var m = high;
-    for (var i = 0; i < length; i += 2) {
-      points2_lat[i] = m;
-      points2_lat[i+1] = m;
-      m -= space2;
-    }
-
-    var lat_array = new Array(cell);
-    var lng_array = new Array(cell);
-    lat_array[0] = high;
-    lng_array[0] = left;
-    var index = 1;
-    for (var i = 3; i < length; i +=4) {
-      lat_array[index] = points2_lat[i];
-      lat_array[index+1] = points2_lat[i+1];
-      lng_array[index] = points1_lng[i];
-      lng_array[index+1] = points1_lng[i+1];
-
-      index += 2;
-    }
+    var latlng = [36.109899, 140.10176];//爆弾設置
 
 
       var map;
       var send_pos;
+      var name = null;
       function initMap() {
           // 緯度・経度を変数に格納
           //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
@@ -120,12 +57,29 @@
           //markPos(pos_data);
           startWatchPosition();
 
+          var length = cell*2+2;
+          var points1 = new Array(length);
+          var points1_lat = new Array(points1.length);
+          points1_lat[0] = high;
+          var points1_lng = new Array(points1.length);
+          var n = low;
+          for(var i = 1; i < points1.length; i+=2) {
+            points1_lat[i] = n;
+            points1_lat[i+1] = n;
+            if(n == high){
+              n = low;
+            } else {
+              n = high;
+            }
+          }
 
-
-
-
-
-
+          var space1 = (right-left)/cell;
+          var n = left;
+          for(var i = 0; i < points1.length; i+=2) {
+            points1_lng[i] = n;
+            points1_lng[i+1] = n;
+            n += space1;
+          }
 
           for(i = 0; i < points1.length; i++) {
             var lat = points1_lat[i];
@@ -154,7 +108,29 @@
             new google.maps.LatLng(36.109427, 140.10204400)
           ]*/
 
+          var points2 = new Array(length);
+          var points2_lat = new Array(length);
+          var points2_lng = new Array(length);
+          points2_lng[0] = left;
 
+          var m = right;
+          for(var i = 1; i < length; i += 2) {
+            points2_lng[i] = m;
+            points2_lng[i+1] = m;
+            if (m == left) {
+              m = right;
+            } else {
+              m = left
+            }
+          }
+
+          var space2 = (high-low)/cell;
+          var m = high;
+          for (var i = 0; i < length; i += 2) {
+            points2_lat[i] = m;
+            points2_lat[i+1] = m;
+            m -= space2;
+          }
 
           for (var i = 0; i < length; i++) {
             points2[i] = new google.maps.LatLng(points2_lat[i], points2_lng[i]);
@@ -200,13 +176,14 @@
             strokeOpacity: "0.5"
           };
 
+
           var poly1 = new google.maps.Polyline(PolylineOptions1);
           poly1.setMap(map);
 
           var poly2 = new google.maps.Polyline(PolylineOptions2);
           poly2.setMap(map);
+        }
 
-      }
 
 
       function setBomb(latlng) {
@@ -218,7 +195,19 @@
             position[i][j] = 0;
           }
         }
-        //console.log(BomPosition[0]);
+          var lat_array = new Array(cell);
+          var lng_array = new Array(cell);
+          lat_array[0] = high;
+          lng_array[0] = left;
+          var index = 1;
+          for (var i = 3; i < length; i +=4) {
+            lat_array[index] = points2_lat[i];
+            lat_array[index+1] = points2_lat[i+1];
+            lng_array[index] = points1_lng[i];
+            lng_array[index+1] = points1_lng[i+1];
+
+            index += 2;
+          }
 
         var lat;
         var lng;
@@ -229,33 +218,41 @@
                 position[j][i] = 1;
                 lat = j;
                 lng = i;
-                return position;
               }
             }
-          } //else {
-            //console.log(err);
-          //}
+          }
         }
 
-        var hostUrl = '/set';
-        $.ajax({
-          url: hostUrl,
-          type: 'POST',
-          dataType: 'json',
-          data: {"x" : lng, "y" : lat},
-        }).success(function(data) {
-          console.log("ok");
-        });
+          var myposition = (36.1097816, 140.102041);
+          var position = new Array();
+          for (var i = 0; i < cell; i++) {
+            position[i] = new Array();
+            for (var j = 0; j < cell; j++) {
+              position[i][j] = 0;
+              lat = i;
+              lng = j;
+            }
+          }
+          console.log(position);
 
+          var hostUrl = '/set';
+          $.ajax({
+            url: hostUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: {"x" : lng, "y" : lat},
+          }).success(function(data) {
+            console.log("ok");
+          });
+        return position;
       }
-
 
       $( function insert() {
         console.log($('#insert'));
             $( '#insert' ) .click(
               function() {
                 var hostUrl= '/insert';
-                var name = document.input_name.p_name.value;
+                name = document.input_name.p_name.value;
                 $.ajax({
                   url: hostUrl,
                   type:'POST',
@@ -415,6 +412,7 @@
       function onWatchPosition(position){
         //console.log(sucess);
         //create a position object.
+
         var pos = {
           lat: position.coords.latitude,
           long: position.coords.longitude
@@ -433,9 +431,11 @@
         //   new google.maps.Point(0, 0)
         // );
 
-        send_pos = {"name" : "person1", "pos" : {"lat":pos.lat, "long":pos.long}};
+        send_pos = {"name" : name, "pos" : {"lat":pos.lat, "long":pos.long}};
+
         console.log(send_pos);
-        sendPosData(send_pos);
+        if(send_pos.name != null)
+          sendPosData(send_pos);
 
         var markerOptions = {
           position: pos,
