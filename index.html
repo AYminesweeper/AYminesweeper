@@ -209,8 +209,8 @@
       }
 
 
-      function setBom(latlng) {
-        var BomPosition = latlng;
+      function setBomb(latlng) {
+        var BombPosition = latlng;
         var position = new Array();
         for (var i = 0; i < cell; i++) {
           position[i] = new Array();
@@ -220,11 +220,15 @@
         }
         //console.log(BomPosition[0]);
 
+        var lat;
+        var lng;
         for (var i = 0; i < cell; i++) {
-          if (lng_array[i] <= BomPosition[1] && BomPosition[1] < lng_array[i+1]) {
+          if (lng_array[i] <= BombPosition[1] && BombPosition[1] < lng_array[i+1]) {
             for (var j = 0; j < cell; j++) {
-              if (BomPosition[0] <= lat_array[j] && lat_array[j+1] < BomPosition[0]) {
+              if (BombPosition[0] <= lat_array[j] && lat_array[j+1] < BombPosition[0]) {
                 position[j][i] = 1;
+                lat = j;
+                lng = i;
                 return position;
               }
             }
@@ -233,8 +237,15 @@
           //}
         }
 
-        //setBom();
-        //console.log(position);
+        var hostUrl = '/set';
+        $.ajax({
+          url: hostUrl,
+          type: 'POST',
+          dataType: 'json',
+          data: {"x" : lng, "y" : lat},
+        }).success(function(data) {
+          console.log("ok");
+        });
 
       }
 
@@ -323,6 +334,8 @@
     //    });
     // } );
 
+    var info = new Array();
+
     $( function() {
       $( '#update' ).click(sendPosData)
     });
@@ -353,7 +366,7 @@
           for(var arrCount = 0; arrCount < pos_data.length; arrCount++){
               var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
               var name = pos_data[arrCount].name;
-              var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
+              /*var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
                 new google.maps.Size(73,51),
                 new google.maps.Point(0,0),
                 new google.maps.Point(19,51)
@@ -363,13 +376,24 @@
                   map: map,
                   title: name,
                   icon: icon
-              });
-              var info = new google.maps.InfoWindow({
+              });*/
+
+              var _i = new google.maps.InfoWindow({
+                  map: map,
                   content: name,
-                  disableAutoPan: true
-              }).open(marker.getMap(), marker);
-          }
-      }
+                  disableAutoPan: true,
+                  position: pos
+              });
+
+              if(info[arrCount]){
+                info[arrCount].close();
+              }
+              info[arrCount] = _i;
+              info[arrCount].open(marker.getMap(), marker);
+
+
+            }
+        }
 
       var infoWindow = new google.maps.InfoWindow;
       /* */
@@ -430,7 +454,7 @@
       }
 
       initMap();
-      var position = setBom(latlng);
+      var position = setBomb(latlng);
       console.log(position);  //爆弾の位置を配列にて表示
       setInterval(receive.bind(this), 5000);
       setInterval(sendPosData.bind(this), 5000);
