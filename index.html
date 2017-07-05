@@ -6,28 +6,54 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <style>
     #map {
-      width: 80vw;
+      width: 100vw;
       height: 80vh;
     }
+    body {
+      margin: 0;
+    }
     </style>
+    <script><!--
+      var FORM = new Array();
+      parse();
+
+      function parse() {  
+        var buffer = location.search.substr(1);
+        pairs = buffer.split("&");
+
+        for (var i in pairs) {
+          var pair = pairs[i].split("=");
+          FORM[pair[0]] = unescape(pair[1].replace("+", " "));
+        }
+      }
+      console.log(FORM["name"]);
+    //--></script>
   </head>
   <body>
     <div id="map"></div>
-    <button id="update">送信(update)</button>
-    <!-- お名前：<input type="text" id="cojtid" placeholder="入れたら自動でJSが認識します" /> -->
-    <form name="input_name">
-    player name：<input type="text" name="p_name" value=""><br>
-    <input type="button" id="insert" value="決定!" ><br>
-    </form>
-
+    
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <script type="text/javascript">
 
+    //setting
+    var cell = 10;  //マスの数
+    var high = 36.11204;  //左上点の緯度
+    var low = 36.109698;  //右下点の緯度
+    var left = 140.09901;  //左上点の経度
+    var right = 140.102199;  //右下点の経度
+    var latlng = [36.109899, 140.10176];//爆弾設置
+
+
       var map;
+<<<<<<< HEAD
       var send_pos =
       {"name" : null, "pos" : {"lat":null, "long":null}};
 
+=======
+      var send_pos;
+      var name = FORM["name"];
+>>>>>>> a46808c0fa9e1c2da88b2d402ad71b7499a374d5
       function initMap() {
           // 緯度・経度を変数に格納
           //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
@@ -35,11 +61,12 @@
 
           // マップオプションを変数に格納
           var mapOptions = {
-              zoom : 18,
+              zoom : 17,
               center : centerposition,  // 中心は現在地の緯度・経度
               scrollwheel : false,
-              //draggable : false,
+              draggable : false,
               rotateControl : true,
+              disableDoubleClickZoom: true,
           };
           // マップオブジェクト作成
           map = new google.maps.Map(
@@ -48,16 +75,6 @@
           );
           //markPos(pos_data);
           startWatchPosition();
-
-          //setting
-          var cell = 10;  //マスの数
-          var high = 36.11204;  //左上点の緯度
-          var low = 36.109698;  //右下点の緯度
-          var left = 140.09901;  //左上点の経度
-          var right = 140.102199;  //右下点の経度
-
-
-
 
           var length = cell*2+2;
           var points1 = new Array(length);
@@ -178,15 +195,25 @@
             strokeOpacity: "0.5"
           };
 
-          
+
           var poly1 = new google.maps.Polyline(PolylineOptions1);
           poly1.setMap(map);
 
           var poly2 = new google.maps.Polyline(PolylineOptions2);
           poly2.setMap(map);
+        }
 
 
 
+      function setBomb(latlng) {
+        var BombPosition = latlng;
+        var position = new Array();
+        for (var i = 0; i < cell; i++) {
+          position[i] = new Array();
+          for (var j = 0; j < cell; j++) {
+            position[i][j] = 0;
+          }
+        }
           var lat_array = new Array(cell);
           var lng_array = new Array(cell);
           lat_array[0] = high;
@@ -201,42 +228,43 @@
             index += 2;
           }
 
+        var lat;
+        var lng;
+        for (var i = 0; i < cell; i++) {
+          if (lng_array[i] <= BombPosition[1] && BombPosition[1] < lng_array[i+1]) {
+            for (var j = 0; j < cell; j++) {
+              if (BombPosition[0] <= lat_array[j] && lat_array[j+1] < BombPosition[0]) {
+                position[j][i] = 1;
+                lat = j;
+                lng = i;
+              }
+            }
+          }
+        }
+
           var myposition = (36.1097816, 140.102041);
           var position = new Array();
           for (var i = 0; i < cell; i++) {
             position[i] = new Array();
             for (var j = 0; j < cell; j++) {
               position[i][j] = 0;
+              lat = i;
+              lng = j;
             }
           }
           console.log(position);
 
-          /*for (i = 0; i < index; i++) {
-            if myposition
-          }*/
-
+          var hostUrl = '/set';
+          $.ajax({
+            url: hostUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: {"x" : lng, "y" : lat},
+          }).success(function(data) {
+            console.log("ok");
+          });
+        return position;
       }
-
-      $( function insert() {
-        console.log($('#insert'));
-            $( '#insert' ) .click(
-              function() {
-                var hostUrl= '/insert';
-                name = document.input_name.p_name.value;
-                $.ajax({
-                  url: hostUrl,
-                  type:'POST',
-                  dataType: 'json',
-                  data :{"name" : name, "pos" : {"lat":10.00001, "long":10.00001}},
-                  //timeout:10000,
-                }).done(function(data) {
-                  console.log("ok");
-                  console.log(data);
-                }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-                  alert("error");
-                })
-              });
-          } );
 
       function receive(){
         var hostUrl= '/receive';
@@ -302,6 +330,8 @@
     //    });
     // } );
 
+    var info = new Array();
+
     $( function() {
       $( '#update' ).click(sendPosData)
     });
@@ -332,7 +362,7 @@
           for(var arrCount = 0; arrCount < pos_data.length; arrCount++){
               var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
               var name = pos_data[arrCount].name;
-              var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
+              /*var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
                 new google.maps.Size(73,51),
                 new google.maps.Point(0,0),
                 new google.maps.Point(19,51)
@@ -342,13 +372,24 @@
                   map: map,
                   title: name,
                   icon: icon
-              });
-              var info = new google.maps.InfoWindow({
+              });*/
+
+              var _i = new google.maps.InfoWindow({
+                  map: map,
                   content: name,
-                  disableAutoPan: true
-              }).open(marker.getMap(), marker);
-          }
-      }
+                  disableAutoPan: true,
+                  position: pos
+              });
+
+              if(info[arrCount]){
+                info[arrCount].close();
+              }
+              info[arrCount] = _i;
+              info[arrCount].open(marker.getMap(), marker);
+
+
+            }
+        }
 
       var infoWindow = new google.maps.InfoWindow;
       /* */
@@ -370,7 +411,7 @@
       function onWatchPosition(position){
         //console.log(sucess);
         //create a position object.
-        
+
         var pos = {
           lat: position.coords.latitude,
           long: position.coords.longitude
@@ -391,10 +432,6 @@
 
         send_pos = {"name" : name, "pos" : {"lat":pos.lat, "long":pos.long}};
 
-        // console.log(send_pos);
-        // if(send_pos.name != null)
-        //   sendPosData(send_pos);
-
         var markerOptions = {
           position: pos,
           map: map
@@ -412,6 +449,8 @@
       }
 
       initMap();
+      var position = setBomb(latlng);
+      console.log(position);  //爆弾の位置を配列にて表示
       setInterval(receive.bind(this), 5000);
       console.log(send_pos);
       setInterval(sendPosData.bind(this), 5000);

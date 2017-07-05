@@ -1,7 +1,7 @@
 var express = require('express'),
     bodyParser = require('body-parser');
 
-var sqlite3 = require('sqlite3').verbose();   
+var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('db.sqlite3');
 var path = require('path');
 
@@ -18,12 +18,17 @@ setMine(4, 7);
 console.log(field);
 
 router.get('/', function(req, res) {
+	res.sendFile(path.resolve("./insert.html"));  //path.resolve()で./insert.htmlを絶対パスに変換
+});
+
+router.get('/index*', function(req, res) {
 	res.sendFile(path.resolve("./index.html"));  //path.resolve()で./index.htmlを絶対パスに変換
 });
 
 router.get('/delete', function(req, res) {
 	db.run("DELETE FROM players");
 });
+
 
 router.post('/set', function(req, res) {
 	console.log("I'm in insert.");
@@ -40,7 +45,7 @@ router.post('/insert', function(req, res) {
 	let name = req.body['name'],
 		lat = req.body['pos'].lat,
 		long = req.body['pos'].long;
-	
+
 	db.run("INSERT INTO players VALUES (?,?,?,?)", name, lat, long, 1);
 
 	res.send(true);
@@ -58,8 +63,7 @@ router.post('/update', function(req, res) {
 	console.log(req.body['pos']);
 	console.log(R_pos);
 	console.log(getSquarePos(R_pos));
-	
-	
+
 	//console.log(req.body['pos']);
 	//console.log(isMine(getSquarePos(R_pos)));
 	//field[1][1] = 1;
@@ -82,7 +86,7 @@ router.post('/update', function(req, res) {
 
 router.post('/receive', function(req, res) {
 	let name, lat, long;
-	db.all("SELECT * FROM players", 
+	db.all("SELECT * FROM players",
 		function (err, rows) {
 			//console.log(rows);
 			res.json(rows);
@@ -93,7 +97,7 @@ router.post('/receive', function(req, res) {
 function createField(){
 	var x, y;
 	var tbl = new Array(square_num);
-	
+
 	for(y = 0; y < square_num; y++) {
  		tbl[y] = new Array(square_num);
   		for(x = 0; x < square_num; x++) {
