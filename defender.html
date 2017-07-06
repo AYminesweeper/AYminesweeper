@@ -13,21 +13,6 @@
       margin: 0;
     }
     </style>
-    <script><!--
-      var FORM = new Array();
-      parse();
-
-      function parse() {  
-        var buffer = location.search.substr(1);
-        pairs = buffer.split("&");
-
-        for (var i in pairs) {
-          var pair = pairs[i].split("=");
-          FORM[pair[0]] = unescape(pair[1].replace("+", " "));
-        }
-      }
-      console.log(FORM["name"]);
-    //--></script>
   </head>
   <body>
     <div id="map"></div>
@@ -47,7 +32,6 @@
 
       var map;
       var send_pos;
-      var name = FORM["name"];
       
       function initMap() {
           // 緯度・経度を変数に格納
@@ -68,8 +52,6 @@
               document.getElementById("map"), // マップを表示する要素
               mapOptions         // マップオプション
           );
-          //markPos(pos_data);
-          startWatchPosition();
 
           var length = cell*2+2;
           var points1 = new Array(length);
@@ -196,7 +178,27 @@
 
           var poly2 = new google.maps.Polyline(PolylineOptions2);
           poly2.setMap(map);
+
+          google.maps.event.addListener(map, 'click', setlistener);
         }
+
+      function setlistener(event) {
+        let lat = event.latLng.lat();
+        let long = event.latLng.lng();
+
+        var hostUrl = '/set';
+        $.ajax({
+            url: hostUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: {"long" : long, "lat" : lat},
+        }).success(function(data) {
+            console.log("ok");
+        });
+
+        console.log(latlng);
+        console.log(position);
+      }
 
 
 
@@ -237,7 +239,7 @@
           }
         }
 
-          var myposition = (36.1097816, 140.102041);
+          //var myposition = (36.1097816, 140.102041);
           var position = new Array();
           for (var i = 0; i < cell; i++) {
             position[i] = new Array();
@@ -248,6 +250,7 @@
             }
           }
           console.log(position);
+          console.log(lng,lat)
 
           var hostUrl = '/set';
           $.ajax({
@@ -281,77 +284,7 @@
         });
       }
 
-      function sendPosData(){
-        var hostUrl= '/update';
-        //if(name === "") return;
-        //pos.name = name;
-        $.ajax({
-          // url: "/",
-          url: hostUrl,
-          type: "post",
-          dataType: "json",
-          data: send_pos ,
-
-          success: function(res){
-            console.log("sendPosData: Success");
-            console.log(res);
-            if (res['msg'] == 'bomb') alert("Bomb!");
-          },
-          error: function(res){
-            console.log("sendPosData: Error");
-            console.log(res);
-          }
-        });
-      }
-      // var pos = {"lat":11, "long":12};
-      // sendPosData(pos);
-
-  //     $( function() {
-    //  $( '#update' ) .click(
-    //    function sendPosData(pos) {
-    //      var hostUrl= '/update';
-    //      $.ajax({
-    //        url: hostUrl,
-    //        type:'post',
-    //        dataType: 'json',
-    //        data :pos,
-    //        //timeout:10000,
-    //      }).done(function(data) {
-    //        console.log("ok");
-    //        console.log(data);
-    //      }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-    //        alert("error");
-    //      })
-    //    });
-    // } );
-
-    var info = new Array();
-
-    $( function() {
-      $( '#update' ).click(sendPosData)
-    });
-
-
-    /* $( function() {
-      $( '#ajax-button' ) .click(
-        function sendPosData(pos) {
-          var hostUrl= '/insert';
-          $.ajax({
-            url: hostUrl,
-            type:'POST',
-            dataType: "text",
-            //data : {"name" : "person1", "pos" : {"lat":10.00001, "long":10.00001}},
-            data : JSON.stringify(pos),
-            //timeout:10000,
-          }).done(function(data) {
-          console.log("ok");
-            console.log(data);
-          }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-            alert("error");
-          })
-        });
-    } );*/
-
+    //var info = new Array();
 
       function markPos(pos_data){
           for(var arrCount = 0; arrCount < pos_data.length; arrCount++){
@@ -376,79 +309,24 @@
                   position: pos
               });
 
+              /*
               if(info[arrCount]){
                 info[arrCount].close();
               }
               info[arrCount] = _i;
-              //info[arrCount].open(marker.getMap(), marker);
+              info[arrCount].open(marker.getMap(), marker);
+              */
 
 
             }
         }
 
-      var infoWindow = new google.maps.InfoWindow;
-      /* */
-      function startWatchPosition(){
-        //Try HTML5 geolocation.
-        if (navigator.geolocation) {
-          //get a current position
-          navigator.geolocation.watchPosition(onWatchPosition, function(err) {
-            console.log('hell');
-            console.log(err);
-            handleLocationError(true, infoWindow, map.getCenter());
-          });
-        } else {
-          //Browser doesnt support Geolocation.
-          handleLocationError(false, infoWindow, map.getCenter());
-        }
-      }
-
-      function onWatchPosition(position){
-        //console.log(sucess);
-        //create a position object.
-
-        var pos = {
-          lat: position.coords.latitude,
-          long: position.coords.longitude
-        };
-
-        console.log(pos.lat);
-        console.log(pos.long);
-
-        /*infoWindow.setPosition(pos);
-        infoWindow.setContent('Location found.');
-        map.setCenter(pos);*/
-
-        //アイコンの表示設定
-        // var icon = new google.maps.MarkerImage('img/hand-finger-64px.png',
-        //   new google.maps.Size(64, 64),
-        //   new google.maps.Point(0, 0)
-        // );
-
-        send_pos = {"name" : name, "pos" : {"lat":pos.lat, "long":pos.long}};
-
-        var markerOptions = {
-          position: pos,
-          map: map
-        };
-
-        //アイコンを表示させる記述
-        var marker = new google.maps.Marker(markerOptions);
-      }
-      function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        console.log('failed')
-        infoWindow.setPosition(pos) ;
-        infoWindow.setContent(browserHasGeolocation ?
-                              'Error: The Geolocation service failed.':
-                              'Error: Your browser doesn\'t support geolocation');
-      }
-
+ 
       initMap();
       var position = setBomb(latlng);
       console.log(position);  //爆弾の位置を配列にて表示
       setInterval(receive.bind(this), 5000);
-      console.log(send_pos);
-      setInterval(sendPosData.bind(this), 5000);
+
     </script>
   </body>
 </html>

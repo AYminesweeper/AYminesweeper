@@ -21,6 +21,10 @@ router.get('/', function(req, res) {
 	res.sendFile(path.resolve("./menu.html"));  //path.resolve()で./insert.htmlを絶対パスに変換
 });
 
+router.get('/defender', function(req, res) {
+	res.sendFile(path.resolve("./defender.html"));  //path.resolve()で./insert.htmlを絶対パスに変換
+});
+
 router.get('/insert', function(req, res) {
 	res.sendFile(path.resolve("./insert.html"));  //path.resolve()で./insert.htmlを絶対パスに変換
 });
@@ -29,17 +33,17 @@ router.get('/index*', function(req, res) {
 	res.sendFile(path.resolve("./index.html"));  //path.resolve()で./index.htmlを絶対パスに変換
 });
 
-router.get('/delete', function(req, res) {
+router.get('/delete', function(req, res) { //データベースカラムを全て削除
 	db.run("DELETE FROM players");
 });
 
 
-router.post('/set', function(req, res) {
-	console.log("I'm in insert.");
-	let x = req.body['x'],
-	    y = req.body['y'];
+router.post('/set', function(req, res) { 
+	console.log("I'm in set.");
+	console.log(req.body);
 
-	setMine(x, y);
+	let pos = getSquarePos(convertRelative(req.body));
+	setMine(pos.x, pos.y);
 	console.log(field);
 });
 
@@ -83,9 +87,9 @@ router.post('/update', function(req, res) {
 
 		res.json(
       { msg: "bomb" }
-    );
+    	);
 	}
-		res.send();
+		res.send(true);
 });
 
 router.post('/receive', function(req, res) {
@@ -120,12 +124,15 @@ function convertRelative (pos){
 	var R_long = pos.long - baseX;
 	var R_lat = pos.lat - baseY;
 
+	console.log("R_long: " + R_long + ", R_lat: " + R_lat);
+
 	return {"long": R_long, "lat": R_lat};
 }
 
 /* 相対座標から現在のマスの座標を取得 */
 function getSquarePos (R_pos) {
-	return {"x" : Math.floor(R_pos.long/square_sizeX), "y" : -1*Math.floor(R_pos.lat/square_sizeY)};
+	/* R_pos.longは正の数なので切り捨て,R_pos.latは負の数なので切り上げ */
+	return {"x" : Math.floor(R_pos.long/square_sizeX), "y" : -1*Math.ceil(R_pos.lat/square_sizeY)};
 }
 
 /* 現在のxy座標か地雷かどうか */
