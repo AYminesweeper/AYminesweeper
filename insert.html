@@ -1,0 +1,49 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>insert</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body>
+
+    player name：<input type="text" id="p_name" value=""><br>
+    <input type="button" id="insert" value="決定!" ><br>
+
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
+    <script type="text/javascript">
+
+      $( function insert() {
+        console.log($('#insert'));
+            $( '#insert' ) .click(
+              function() {
+                var hostUrl= '/insert';
+                var name = document.getElementById("p_name");
+                $.ajax({
+                  url: hostUrl,
+                  type:'POST',
+                  dataType: 'json',
+                  data :{"name" : name.value, "pos" : {"lat":0.00000, "long":0.00000}},
+                }).done(function(data) {
+                  console.log("ok");
+                  console.log(data);
+                  location.href = "/index?" + "name=" + name.value;
+                }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+                  alert("error");
+                })
+              });
+          } );
+
+      /* エンターキーが押された時の処理 */
+      $( '#p_name' ).keypress( function ( e ) {
+        if ( e.which == 13 ) {
+          $( '#insert' ).trigger("click");
+        return false;
+        }
+      } );
+
+  </script>
+  </body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+    #map {
+        width: 100vw;
+        height: 80vh;
+    }
+    
+    body {
+        margin: 0;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
+    <script type="text/javascript">
+    //setting
+    var cell = 10; //マスの数
+    var high = 36.11204; //左上点の緯度
+    var low = 36.109698; //右下点の緯度
+    var left = 140.09901; //左上点の経度
+    var right = 140.102199; //右下点の経度
+    var latlng = [36.109899, 140.10176]; //爆弾設置
+
+
+    var map;
+    var send_pos;
+
+    function initMap() {
+        // 緯度・経度を変数に格納
+        //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
+        var centerposition = new google.maps.LatLng(36.110732, 140.100619);
+
+        // マップオプションを変数に格納
+        var mapOptions = {
+            zoom: 17,
+            center: centerposition, // 中心は現在地の緯度・経度
+            scrollwheel: false,
+            draggable: false,
+            rotateControl: true,
+            disableDoubleClickZoom: true,
+        };
+        // マップオブジェクト作成
+        map = new google.maps.Map(
+            document.getElementById("map"), // マップを表示する要素
+            mapOptions // マップオプション
+        );
+
+        var length = cell * 2 + 2;
+        var points1 = new Array(length);
+        var points1_lat = new Array(points1.length);
+        points1_lat[0] = high;
+        var points1_lng = new Array(points1.length);
+        var n = low;
+        for (var i = 1; i < points1.length; i += 2) {
+            points1_lat[i] = n;
+            points1_lat[i + 1] = n;
+            if (n == high) {
+                n = low;
+            } else {
+                n = high;
+            }
+        }
+
+        var space1 = (right - left) / cell;
+        var n = left;
+        for (var i = 0; i < points1.length; i += 2) {
+            points1_lng[i] = n;
+            points1_lng[i + 1] = n;
+            n += space1;
+        }
+
+        for (i = 0; i < points1.length; i++) {
+            var lat = points1_lat[i];
+            var lng = points1_lng[i];
+            points1[i] = new google.maps.LatLng(lat, lng);
+        }
+
+        /*var points1 = [
+          new google.maps.LatLng(36.109900, 140.101350),
+          new google.maps.LatLng(36.109427, 140.101350),
+          new google.maps.LatLng(36.109427, 140.10143675),
+          new google.maps.LatLng(36.109900, 140.10143675),
+          new google.maps.LatLng(36.109900, 140.10152350),
+          new google.maps.LatLng(36.109427, 140.10152350),
+          new google.maps.LatLng(36.109427, 140.10161025),
+          new google.maps.LatLng(36.109900, 140.10161025),
+          new google.maps.LatLng(36.109900, 140.10169700),
+          new google.maps.LatLng(36.109427, 140.10169700),
+          new google.maps.LatLng(36.109427, 140.10178375),
+          new google.maps.LatLng(36.109900, 140.10178375),
+          new google.maps.LatLng(36.109900, 140.10187050),
+          new google.maps.LatLng(36.109427, 140.10187050),
+          new google.maps.LatLng(36.109427, 140.10195725),
+          new google.maps.LatLng(36.109900, 140.10195725),
+          new google.maps.LatLng(36.109900, 140.10204400),
+          new google.maps.LatLng(36.109427, 140.10204400)
+        ]*/
+
+        var points2 = new Array(length);
+        var points2_lat = new Array(length);
+        var points2_lng = new Array(length);
+        points2_lng[0] = left;
+
+        var m = right;
+        for (var i = 1; i < length; i += 2) {
+            points2_lng[i] = m;
+            points2_lng[i + 1] = m;
+            if (m == left) {
+                m = right;
+            } else {
+                m = left
+            }
+        }
+
+        var space2 = (high - low) / cell;
+        var m = high;
+        for (var i = 0; i < length; i += 2) {
+            points2_lat[i] = m;
+            points2_lat[i + 1] = m;
+            m -= space2;
+        }
+
+        for (var i = 0; i < length; i++) {
+            points2[i] = new google.maps.LatLng(points2_lat[i], points2_lng[i]);
+        }
+
+        //console.log(space1);
+        //console.log(space2);
+
+        /*var points2 = [
+          new google.maps.LatLng(36.109900, 140.101350),
+          new google.maps.LatLng(36.109900, 140.102044),
+          new google.maps.LatLng(36.109840875, 140.102044),
+          new google.maps.LatLng(36.109840875, 140.101350),
+          new google.maps.LatLng(36.10978175, 140.101350),
+          new google.maps.LatLng(36.10978175, 140.102044),
+          new google.maps.LatLng(36.109722625, 140.102044),
+          new google.maps.LatLng(36.109722625, 140.101350),
+          new google.maps.LatLng(36.1096635, 140.101350),
+          new google.maps.LatLng(36.1096635, 140.102044),
+          new google.maps.LatLng(36.109604375, 140.102044),
+          new google.maps.LatLng(36.109604375, 140.101350),
+          new google.maps.LatLng(36.10954525, 140.101350),
+          new google.maps.LatLng(36.10954525, 140.102044),
+          new google.maps.LatLng(36.109486125, 140.102044),
+          new google.maps.LatLng(36.109486125, 140.101350),
+          new google.maps.LatLng(36.109427, 140.101350),
+          new google.maps.LatLng(36.109427, 140.102044)
+        ]*/
+
+        var PolylineOptions1 = {
+            map: map,
+            path: points1,
+            strokeWeight: 5,
+            strokeColor: "#0000ff",
+            strokeOpacity: "0.5"
+        };
+
+        var PolylineOptions2 = {
+            map: map,
+            path: points2,
+            strokeWeight: 5,
+            strokeColor: "#0000ff",
+            strokeOpacity: "0.5"
+        };
+
+
+        var poly1 = new google.maps.Polyline(PolylineOptions1);
+        poly1.setMap(map);
+
+        var poly2 = new google.maps.Polyline(PolylineOptions2);
+        poly2.setMap(map);
+
+        google.maps.event.addListener(map, 'click', setlistener);
+    }
+
+    google.maps.event.addDomListener(window, 'load', initMap);
+
+    function setlistener(event) {
+        let lat = event.latLng.lat();
+        let long = event.latLng.lng();
+
+        var hostUrl = '/set';
+        $.ajax({
+            url: hostUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                "long": long,
+                "lat": lat
+            },
+            success: function(res) {
+                console.log("set: Success");
+                console.log(res);
+            },
+            error: function(res) {
+                console.log("set: Error");
+                console.log(res);
+            }
+        });
+
+        console.log(latlng);
+    }
+
+    function receive() {
+        var hostUrl = '/receive';
+        $.ajax({
+            // url: "http://192.168.17.140:8887/data.json",
+            // url: "https://pullpulldondon.github.io/pos.json",
+            //url: "https://polar-bastion-81724.herokuapp.com/receivePosition",
+            url: hostUrl,
+            type: "post",
+            dataType: "json",
+
+            success: function(res) {
+                console.log(res);
+                markPos(res);
+            },
+            error: function(res) {
+                console.log("ERROR");
+            }
+        });
+    }
+
+    //var info = new Array();
+
+    function markPos(pos_data) {
+        for (var arrCount = 0; arrCount < pos_data.length; arrCount++) {
+            var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
+            var name = pos_data[arrCount].name;
+            /*var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
+              new google.maps.Size(73,51),
+              new google.maps.Point(0,0),
+              new google.maps.Point(19,51)
+            );
+            var marker = new google.maps.Marker({
+                position: pos,
+                map: map,
+                title: name,
+                icon: icon
+            });*/
+
+            var _i = new google.maps.InfoWindow({
+                map: map,
+                content: name,
+                disableAutoPan: true,
+                position: pos
+            });
+
+            /*
+            if(info[arrCount]){
+              info[arrCount].close();
+            }
+            info[arrCount] = _i;
+            info[arrCount].open(marker.getMap(), marker);
+            */
+
+        }
+    }
+
+    initMap();
+    setInterval(receive.bind(this), 5000);
+    </script>
+</body>
+
+</html>
