@@ -317,6 +317,7 @@
     }
 
     initMap();
+    /* initMap()のコールバック関数の中に以下の２つを入れてください */
     setInterval(receive.bind(this), 5000);
     setInterval(sendPosData.bind(this), 5000);
     </script>
