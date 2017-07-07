@@ -13,11 +13,13 @@ var square_num = 10; //1ライン内のマスの数
 var square_sizeX = 0.00031890000000203147; //1マスのx座標サイズ
 var square_sizeY = 0.0002341999999998734; //2マスのy座標サイズ
 
-var player_num = 0; //プレイヤー数
+var player_num; //プレイヤー数
 var dead_num; //ゲームオーバーになったプレイヤーの数
 
 var field = createField();
 console.log(field);
+
+var goal = { "x": 0, "y": 0 };
 
 router.get('/', function(req, res) {
     res.sendFile(path.resolve("./menu.html")); //path.resolve()で./insert.htmlを絶対パスに変換
@@ -60,7 +62,6 @@ router.post('/insert', function(req, res) {
         long = req.body['pos'].long;
 
     db.run("INSERT INTO players VALUES (?,?,?,?)", name, lat, long, 1);
-    player_num++;
 
     console.log("player_num: " + player_num);
 
@@ -86,14 +87,14 @@ router.post('/update', function(req, res) {
 
     if (isMine(getSquarePos(R_pos))) {
         db.run("UPDATE players SET is_survive = 0 WHERE name = ?", name);
-
-        isDone();
-
-
-
+        isDefenderWin();
         res.json({ msg: "bomb" });
     }
-    res.send(true);
+
+    if (isAttackerWin(getSquarePos(R_pos))) {
+        res.send(true);
+    }
+
 });
 
 router.post('/receive', function(req, res) {
@@ -151,15 +152,38 @@ function isMine(SquarePos) {
     return false;
 }
 
-/* 終了判定 */
-function isDone() {
-    db.get("SELECT COUNT(*) FROM players WHERE is_survive = 0", function(err, res) {
-        dead_num = res['COUNT(*)'];
-        console.log("dead_num: " + dead_num);
-        if (player_num == dead_num) {
-            //ゲームオーバー処理
-        }
+/*
+Attacker側ゲームオーバー
+Defender側勝利
+*/
+function isDefenderWin() {
+    db.get("SELECT COUNT(*) FROM players", function(err, res) {
+        player_num = res['COUNT(*)'];
+        console.log("player_num: " + player_num);
+        db.get("SELECT COUNT(*) FROM players WHERE is_survive = 0", function(err, res) {
+            dead_num = res['COUNT(*)'];
+            console.log("dead_num: " + dead_num);
+            if (player_num == dead_num) {
+                console.log("Defender Win!!")
+                    //Attacker側ゲームオーバー処理
+                    //Defender側勝利処理
+            }
+        });
     });
+}
+
+/*
+Attacker側勝利
+Defender側ゲームオーバー
+*/
+function isAttackerWin(SquarePos) {
+    if (SquarePos.x == goal.x && SquarePos.y == goal.y) {
+        //Attacker側勝利処理
+        //Defender側ゲームオーバー処理
+        return true;
+    }
+
+    return false;
 }
 
 
