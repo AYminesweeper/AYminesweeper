@@ -13,6 +13,9 @@ var square_num = 10; //1ライン内のマスの数
 var square_sizeX = 0.00031890000000203147; //1マスのx座標サイズ
 var square_sizeY = 0.0002341999999998734; //2マスのy座標サイズ
 
+var player_num = 0; //プレイヤー数
+var dead_num; //ゲームオーバーになったプレイヤーの数
+
 var field = createField();
 console.log(field);
 
@@ -32,7 +35,7 @@ router.get('/index*', function(req, res) {
 	res.sendFile(path.resolve("./index.html"));  //path.resolve()で./index.htmlを絶対パスに変換
 });
 
-router.get('/delete', function(req, res) { //データベースカラムを全て削除
+router.get('/delete', function(req, res) { //データベースのカラムを全て削除
 	db.run("DELETE FROM players");
 });
 
@@ -42,9 +45,11 @@ router.post('/set', function(req, res) {
 	console.log(req.body);
 
 	let pos = getSquarePos(convertRelative(req.body));
-	setMine(pos.x, pos.y);
-	console.log(field);
-	res.send(true);
+
+	if(setMine(pos.x, pos.y)){
+		console.log(field);
+		res.send(true);
+	}
 });
 
 router.post('/insert', function(req, res) {
@@ -55,6 +60,9 @@ router.post('/insert', function(req, res) {
 		long = req.body['pos'].long;
 
 	db.run("INSERT INTO players VALUES (?,?,?,?)", name, lat, long, 1);
+	player_num++;
+
+	console.log("player_num: " + player_num);
 
 	res.send(true);
 });
@@ -72,21 +80,23 @@ router.post('/update', function(req, res) {
 	console.log(R_pos);
 	console.log(getSquarePos(R_pos));
 
-	//console.log(req.body['pos']);
-	//console.log(isMine(getSquarePos(R_pos)));
-	//field[1][1] = 1;
-	//console.log(isMine({x:1,y:1}));
-
 	console.log("name:" + name);
 
 	db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
 
 	if(isMine(getSquarePos(R_pos))){
 		db.run("UPDATE players SET is_survive = 0 WHERE name = ?", name);
-		console.log("isMine");
+
+		db.get("SELECT COUNT(*) FROM players WHERE is_survive = 0", function (err, res) {
+      		dead_num = res['COUNT(*)'];
+      		console.log("dead_num: " + dead_num);
+      		if(player_num == dead_num){
+      			//終了処理
+      		}
+    	});
 
 		res.json(
-      { msg: "bomb" }
+    	  { msg: "bomb" }
     	);
 	}
 		res.send(true);
@@ -116,8 +126,11 @@ function createField(){
 }
 
 function setMine(x, y){
-	if(x < square_num && y < square_num)
+	if(x < square_num && y < square_num){
 		field[y][x] = 1;
+		return true;
+	}
+	return false;
 }
 
 /* 座標を相対座標へ変換 */
