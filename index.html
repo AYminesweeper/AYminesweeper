@@ -265,9 +265,6 @@
             lng: position.coords.longitude
         };
 
-        console.log(pos.lat);
-        console.log(pos.lng);
-
         send_pos = {
             "name": name,
             "pos": {
@@ -282,9 +279,7 @@
         };
 
         //アイコンを表示させる記述
-        console.log("hey1");
-        var marker = new google.maps.Marker(markerOptions);
-        console.log("hey2");
+        //var marker = new google.maps.Marker(markerOptions);
     }
 
     function handleLocationError(browserHasGeolocation, infoWindow, pos) {
