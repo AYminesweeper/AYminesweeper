@@ -211,9 +211,9 @@
             var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
             var name = pos_data[arrCount].name;
             var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
-              new google.maps.Size(73,51),
-              new google.maps.Point(0,0),
-              new google.maps.Point(19,51)
+                new google.maps.Size(73, 51),
+                new google.maps.Point(0, 0),
+                new google.maps.Point(19, 51)
             );
             var marker = new google.maps.Marker({
                 position: pos,
@@ -228,13 +228,39 @@
                 disableAutoPan: true,
                 position: pos
             });
+        }
+    }
+
+
+    function markPos(pos_data) {
+        for (var arrCount = 0; arrCount < pos_data.length; arrCount++) {
+            var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
+            var name = pos_data[arrCount].name;
+            /*var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
+              new google.maps.Size(73,51),
+              new google.maps.Point(0,0),
+              new google.maps.Point(19,51)
+            );*/
+            var marker = new google.maps.Marker({
+                position: pos,
+                map: map,
+                title: name,
+                //icon: icon
+            });
+
+            var _i = new google.maps.InfoWindow({
+                map: map,
+                content: name,
+                disableAutoPan: true,
+                position: pos
+            });
 
             if (info[arrCount]) {
                 info[arrCount].close();
             }
-            info[arrCount] = _i;
-            info[arrCount].open(marker.getMap(), marker);
 
+            info[arrCount] = _i;
+            info[arrCount].open(marker.getMap());
 
         }
     }

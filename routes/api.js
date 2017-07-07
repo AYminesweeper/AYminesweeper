@@ -35,10 +35,10 @@ router.get('/index*', function(req, res) {
 	res.sendFile(path.resolve("./index.html"));  //path.resolve()で./index.htmlを絶対パスに変換
 });
 
+
 router.get('/delete', function(req, res) { //データベースのカラムを全て削除
 	db.run("DELETE FROM players");
 });
-
 
 router.post('/set', function(req, res) { 
 	console.log("I'm in set.");
