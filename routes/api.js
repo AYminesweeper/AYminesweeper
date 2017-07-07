@@ -33,8 +33,8 @@ router.get('/insert', function(req, res) {
     res.sendFile(path.resolve("./insert.html")); //path.resolve()で./insert.htmlを絶対パスに変換
 });
 
-router.get('/index*', function(req, res) {
-    res.sendFile(path.resolve("./index.html")); //path.resolve()で./index.htmlを絶対パスに変換
+router.get('/Attacker*', function(req, res) {
+    res.sendFile(path.resolve("./Attacker.html")); //path.resolve()で./index.htmlを絶対パスに変換
 });
 
 
@@ -85,15 +85,21 @@ router.post('/update', function(req, res) {
 
     db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
 
+    console.log("here1");
+
     if (isMine(getSquarePos(R_pos))) {
         db.run("UPDATE players SET is_survive = 0 WHERE name = ?", name);
         isDefenderWin();
         res.json({ msg: "bomb" });
     }
 
-    if (isAttackerWin(getSquarePos(R_pos))) {
+    console.log("here2");
+
+    if (!isAttackerWin(getSquarePos(R_pos))) {
         res.send(true);
     }
+
+    console.log("here3");
 
 });
 

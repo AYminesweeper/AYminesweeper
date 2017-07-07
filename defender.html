@@ -24,9 +24,11 @@
 
 <body>
     <div id="map"></div>
+
     <!--ダイアログの内容-->
     <div id="start-dialog" title="GAME START">
     </div>
+
     <script type="text/javascript">
     //setting
     var cell = 10; //マスの数
@@ -202,7 +204,8 @@
         for (var arrCount = 0; arrCount < pos_data.length; arrCount++) {
             var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
             var name = pos_data[arrCount].name;
-            var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
+
+            var icon = new google.maps.MarkerImage('images/icon.png',
                 new google.maps.Size(73, 51),
                 new google.maps.Point(0, 0),
                 new google.maps.Point(19, 51)
@@ -211,7 +214,7 @@
                 position: pos,
                 map: map,
                 title: name,
-                icon: icon
+                icon: icon 
             });
 
             var _i = new google.maps.InfoWindow({
@@ -221,13 +224,12 @@
                 position: pos
             });
 
-            /*
             if(info[arrCount]){
               info[arrCount].close();
             }
             info[arrCount] = _i;
             info[arrCount].open(marker.getMap(), marker);
-            */
+            
 
         }
     }
