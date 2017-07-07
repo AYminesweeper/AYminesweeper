@@ -92,27 +92,6 @@
             points1[i] = new google.maps.LatLng(lat, lng);
         }
 
-        /*var points1 = [
-          new google.maps.LatLng(36.109900, 140.101350),
-          new google.maps.LatLng(36.109427, 140.101350),
-          new google.maps.LatLng(36.109427, 140.10143675),
-          new google.maps.LatLng(36.109900, 140.10143675),
-          new google.maps.LatLng(36.109900, 140.10152350),
-          new google.maps.LatLng(36.109427, 140.10152350),
-          new google.maps.LatLng(36.109427, 140.10161025),
-          new google.maps.LatLng(36.109900, 140.10161025),
-          new google.maps.LatLng(36.109900, 140.10169700),
-          new google.maps.LatLng(36.109427, 140.10169700),
-          new google.maps.LatLng(36.109427, 140.10178375),
-          new google.maps.LatLng(36.109900, 140.10178375),
-          new google.maps.LatLng(36.109900, 140.10187050),
-          new google.maps.LatLng(36.109427, 140.10187050),
-          new google.maps.LatLng(36.109427, 140.10195725),
-          new google.maps.LatLng(36.109900, 140.10195725),
-          new google.maps.LatLng(36.109900, 140.10204400),
-          new google.maps.LatLng(36.109427, 140.10204400)
-          ]*/
-
         var points2 = new Array(length);
         var points2_lat = new Array(length);
         var points2_lng = new Array(length);
@@ -140,30 +119,6 @@
         for (var i = 0; i < length; i++) {
             points2[i] = new google.maps.LatLng(points2_lat[i], points2_lng[i]);
         }
-
-        //console.log(space1);
-        //console.log(space2);
-
-        /*var points2 = [
-          new google.maps.LatLng(36.109900, 140.101350),
-          new google.maps.LatLng(36.109900, 140.102044),
-          new google.maps.LatLng(36.109840875, 140.102044),
-          new google.maps.LatLng(36.109840875, 140.101350),
-          new google.maps.LatLng(36.10978175, 140.101350),
-          new google.maps.LatLng(36.10978175, 140.102044),
-          new google.maps.LatLng(36.109722625, 140.102044),
-          new google.maps.LatLng(36.109722625, 140.101350),
-          new google.maps.LatLng(36.1096635, 140.101350),
-          new google.maps.LatLng(36.1096635, 140.102044),
-          new google.maps.LatLng(36.109604375, 140.102044),
-          new google.maps.LatLng(36.109604375, 140.101350),
-          new google.maps.LatLng(36.10954525, 140.101350),
-          new google.maps.LatLng(36.10954525, 140.102044),
-          new google.maps.LatLng(36.109486125, 140.102044),
-          new google.maps.LatLng(36.109486125, 140.101350),
-          new google.maps.LatLng(36.109427, 140.101350),
-          new google.maps.LatLng(36.109427, 140.102044)
-          ]*/
 
         var PolylineOptions1 = {
             map: map,
@@ -266,11 +221,13 @@
                 position: pos
             });
 
-            if (info[arrCount]) {
-                info[arrCount].close();
+            /*
+            if(info[arrCount]){
+              info[arrCount].close();
             }
             info[arrCount] = _i;
             info[arrCount].open(marker.getMap(), marker);
+            */
 
         }
     }
