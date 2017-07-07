@@ -371,13 +371,13 @@
                 new google.maps.Size(73,51),
                 new google.maps.Point(0,0),
                 new google.maps.Point(19,51)
-              );
+              );*/
               var marker = new google.maps.Marker({
                   position: pos,
                   map: map,
                   title: name,
-                  icon: icon
-              });*/
+                  //icon: icon
+              });
 
               var _i = new google.maps.InfoWindow({
                   map: map,
@@ -390,7 +390,7 @@
                 info[arrCount].close();
               }
               info[arrCount] = _i;
-              info[arrCount].open(marker.getMap(), marker);
+              info[arrCount].open(marker.getMap());
 
 
             }
