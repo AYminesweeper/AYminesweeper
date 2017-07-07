@@ -13,7 +13,8 @@
       margin: 0;
     }
     </style>
-    <script><!--
+    <!-- insert.htmlからGETで送られてきたnameを取得 -->
+    <script>
       var FORM = new Array();
       parse();
 
@@ -27,7 +28,8 @@
         }
       }
       console.log(FORM["name"]);
-    //--></script>
+    </script>
+
   </head>
   <body>
     <div id="map"></div>
@@ -197,69 +199,6 @@
           var poly2 = new google.maps.Polyline(PolylineOptions2);
           poly2.setMap(map);
         }
-
-
-
-      function setBomb(latlng) {
-        var BombPosition = latlng;
-        var position = new Array();
-        for (var i = 0; i < cell; i++) {
-          position[i] = new Array();
-          for (var j = 0; j < cell; j++) {
-            position[i][j] = 0;
-          }
-        }
-          var lat_array = new Array(cell);
-          var lng_array = new Array(cell);
-          lat_array[0] = high;
-          lng_array[0] = left;
-          var index = 1;
-          for (var i = 3; i < length; i +=4) {
-            lat_array[index] = points2_lat[i];
-            lat_array[index+1] = points2_lat[i+1];
-            lng_array[index] = points1_lng[i];
-            lng_array[index+1] = points1_lng[i+1];
-
-            index += 2;
-          }
-
-        var lat;
-        var lng;
-        for (var i = 0; i < cell; i++) {
-          if (lng_array[i] <= BombPosition[1] && BombPosition[1] < lng_array[i+1]) {
-            for (var j = 0; j < cell; j++) {
-              if (BombPosition[0] <= lat_array[j] && lat_array[j+1] < BombPosition[0]) {
-                position[j][i] = 1;
-                lat = j;
-                lng = i;
-              }
-            }
-          }
-        }
-
-          var myposition = (36.1097816, 140.102041);
-          var position = new Array();
-          for (var i = 0; i < cell; i++) {
-            position[i] = new Array();
-            for (var j = 0; j < cell; j++) {
-              position[i][j] = 0;
-              lat = i;
-              lng = j;
-            }
-          }
-          console.log(position);
-
-          var hostUrl = '/set';
-          $.ajax({
-            url: hostUrl,
-            type: 'POST',
-            dataType: 'json',
-            data: {"x" : lng, "y" : lat},
-          }).success(function(data) {
-            console.log("ok");
-          });
-        return position;
-      }
 
       function receive(){
         var hostUrl= '/receive';
@@ -444,8 +383,6 @@
       }
 
       initMap();
-      var position = setBomb(latlng);
-      console.log(position);  //爆弾の位置を配列にて表示
       setInterval(receive.bind(this), 5000);
       console.log(send_pos);
       setInterval(sendPosData.bind(this), 5000);

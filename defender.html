@@ -192,12 +192,17 @@
             type: 'POST',
             dataType: 'json',
             data: {"long" : long, "lat" : lat},
-        }).success(function(data) {
-            console.log("ok");
+          success: function(res){
+            console.log("set: Success");
+            console.log(res);
+          },
+          error: function(res){
+            console.log("set: Error");
+            console.log(res);
+          }
         });
 
         console.log(latlng);
-        console.log(position);
       }
 
 

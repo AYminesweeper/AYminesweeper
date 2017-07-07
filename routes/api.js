@@ -14,7 +14,6 @@ var square_sizeX = 0.00031890000000203147; //1マスのx座標サイズ
 var square_sizeY = 0.0002341999999998734; //2マスのy座標サイズ
 
 var field = createField();
-setMine(6, 7);
 console.log(field);
 
 router.get('/', function(req, res) {
@@ -45,6 +44,7 @@ router.post('/set', function(req, res) {
 	let pos = getSquarePos(convertRelative(req.body));
 	setMine(pos.x, pos.y);
 	console.log(field);
+	res.send(true);
 });
 
 router.post('/insert', function(req, res) {
@@ -116,7 +116,8 @@ function createField(){
 }
 
 function setMine(x, y){
-	field[y][x] = 1;
+	if(x < square_num && y < square_num)
+		field[y][x] = 1;
 }
 
 /* 座標を相対座標へ変換 */
