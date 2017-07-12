@@ -12,7 +12,7 @@
         width: 100vw;
         height: 80vh;
     }
-    
+
     body {
         margin: 0;
     }
@@ -37,6 +37,9 @@
 
 <body>
     <div id="map"></div>
+    <div class="survivor">
+
+    </div>
     <script type="text/javascript">
     //setting
     var cell = 10; //マスの数
@@ -70,6 +73,7 @@
             success: function(res) {
                 console.log(res);
                 markPos(res);
+                survivor(res);
             },
             error: function(res) {
                 console.log("ERROR");
@@ -115,7 +119,7 @@
 
             if(name == g_name)
                 img_num = '1';
-            
+
             var icon = new google.maps.MarkerImage('images/icon' + img_num + '.gif',
               new google.maps.Size(73,51),
               new google.maps.Point(0,0),
@@ -148,6 +152,24 @@
             */
 
         }
+    }
+
+    /*var comment = $(".input_container input").val();
+    if(comment === "") return;
+    var dom = '<div class="chat_item from_us"><img class="face_icon" src="giants.png" alt=""><div class="talk_box">'+comment+'</div><div class="talk_time">12:34</div></div>';
+    $(".chat_container").append(dom);
+    $(".input_container input").val("");*/
+
+    function survivor(players) {
+      var counter = 0;
+      $(".howMany").remove();
+      for (var i = 0; i < players.length; i++) {
+        if (players[i].is_survive) {
+          counter += 1;
+        }
+      }
+      var dom = '<p class="howMany">'+counter+'</p>';
+      $(".survivor").append(dom);
     }
 
     //var infoWindow = new google.maps.InfoWindow;
