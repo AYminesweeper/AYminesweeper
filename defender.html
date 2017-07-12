@@ -28,10 +28,11 @@
         }
     }
     </style>
-</head>
+</hea d>
 
 <body>
     <div id="map"></div>
+    <div class="survivor"></div>
     <!--ダイアログの内容-->
     <div id="start-dialog" title="GAME START">
     </div>
@@ -245,6 +246,18 @@
                 console.log("ERROR");
             }
         });
+    }
+
+        function survivor(players) {
+      var counter = 0;
+      $(".howMany").remove();
+      for (var i = 0; i < players.length; i++) {
+        if (players[i].is_survive) {
+          counter += 1;
+        }
+      }
+      var dom = '<p class="howMany">'+counter+'</p>';
+      $(".survivor").append(dom);
     }
 
     var info = new Array();
