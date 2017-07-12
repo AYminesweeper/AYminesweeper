@@ -11,20 +11,20 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <style>
-        #map {
-            width: 100vw;
-            height: 80vh;
-        }
 
-        body {
-            margin: 0;
-        }
+    #map {
+        width: 100vw;
+        height: 80vh;
+    }
 
-        @media only screen and (max-width: 640px) {
-            #map-canvas {
-                width: 50%;
-                height: auto;
-            }
+    body {
+        margin: 0;
+    }
+
+    @media only screen and (max-width: 640px) {
+        #map-canvas {
+            width: 50%;
+            height: auto;
         }
     </style>
 </head>
@@ -238,6 +238,7 @@
             success: function(res) {
                 console.log(res);
                 markPos(res);
+                survivor(res);
             },
             error: function(res) {
                 console.log("ERROR");
