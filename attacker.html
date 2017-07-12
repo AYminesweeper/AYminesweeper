@@ -123,14 +123,15 @@
                 new google.maps.Point(0, 0),
                 new google.maps.Point(19, 51)
             );
-            markers[arrCount] = new google.maps.Marker({
+            marker = new google.maps.Marker({
                 position: pos,
                 map: map,
                 title: name,
                 icon: icon
             });
 
-            markers[arrCount].setMap(map);
+            marker.setMap(map);
+            markers.push(marker);
 
             /*
             var _i = new google.maps.InfoWindow({
