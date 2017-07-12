@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <title>document</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <style>
     #map {
         width: 100vw;
@@ -35,8 +37,6 @@
 
 <body>
     <div id="map"></div>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <script type="text/javascript">
     //setting
     var cell = 10; //マスの数
@@ -51,7 +51,7 @@
     var send_pos;
     var g_name = FORM["name"];
 
-    function initMap() {
+    function initMap(callback) {
         // 緯度・経度を変数に格納
         //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
         var centerposition = new google.maps.LatLng(36.110732, 140.100619);
@@ -153,9 +153,11 @@
 
         var poly2 = new google.maps.Polyline(PolylineOptions2);
         poly2.setMap(map);
-    }
 
-    google.maps.event.addDomListener(window, 'load', initMap);
+        if (callback) {
+            callback();
+        }
+    }
 
     function receive() {
         var hostUrl = '/receive';
@@ -297,10 +299,12 @@
             'Error: Your browser doesn\'t support geolocation');
     }
 
-    initMap();
-    /* initMap()のコールバック関数の中に以下の２つを入れてください */
-    setInterval(receive.bind(this), 5000);
-    setInterval(sendPosData.bind(this), 5000);
+    google.maps.event.addDomListener(window, 'load', initMap(
+        function() {
+            setInterval(receive.bind(this), 5000);
+            setInterval(sendPosData.bind(this), 5000);
+        }
+    ));
     </script>
 </body>
 
