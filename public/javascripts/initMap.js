@@ -12,9 +12,15 @@
             rotateControl: true,
             disableDoubleClickZoom: true,
             styles: [
-                {"elementType": "geometry",
+            {
+                "elementType": "geometry",
                 "stylers": [{
                     "color": "#ebe3cd"
+                }]
+            }, {
+                "elementType": "labels",
+                "stylers": [{
+                    "visibility": "off"
                 }]
             }, {
                 "elementType": "labels.text.fill",
@@ -68,12 +74,6 @@
                 }]
             }, {
                 "featureType": "poi",
-                "elementType": "labels.text",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "poi",
                 "elementType": "labels.text.fill",
                 "stylers": [{
                     "color": "#93817c"
@@ -95,12 +95,6 @@
                 "elementType": "geometry",
                 "stylers": [{
                     "color": "#f5f1e6"
-                }]
-            }, {
-                "featureType": "road",
-                "elementType": "labels",
-                "stylers": [{
-                    "visibility": "off"
                 }]
             }, {
                 "featureType": "road.arterial",
@@ -167,12 +161,6 @@
                 "elementType": "geometry.fill",
                 "stylers": [{
                     "color": "#b9d3c2"
-                }]
-            }, {
-                "featureType": "water",
-                "elementType": "labels.text",
-                "stylers": [{
-                    "visibility": "off"
                 }]
             }, {
                 "featureType": "water",
