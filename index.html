@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+    #map {
+        width: 100vw;
+        height: 80vh;
+    }
+
+    body {
+        margin: 0;
+    }
+    </style>
+    <!-- insert.htmlからGETで送られてきたnameを取得 -->
+    <script>
+    var FORM = new Array();
+    parse();
+
+    function parse() {
+        var buffer = location.search.substr(1);
+        pairs = buffer.split("&");
+
+        for (var i in pairs) {
+            var pair = pairs[i].split("=");
+            FORM[pair[0]] = unescape(pair[1].replace("+", " "));
+        }
+    }
+    console.log(FORM["name"]);
+    </script>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
+    <script type="text/javascript">
+    //setting
+    var cell = 10; //マスの数
+    var high = 36.11204; //左上点の緯度
+    var low = 36.109698; //右下点の緯度
+    var left = 140.09901; //左上点の経度
+    var right = 140.102199; //右下点の経度
+    var latlng = [36.109899, 140.10176]; //爆弾設置
+
+
+    var map;
+    var send_pos;
+    var name = FORM["name"];
+
+    function initMap() {
+        // 緯度・経度を変数に格納
+        //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
+        var centerposition = new google.maps.LatLng(36.110732, 140.100619);
+
+        // マップオプションを変数に格納
+        var mapOptions = {
+            zoom: 17,
+            center: centerposition, // 中心は現在地の緯度・経度
+            scrollwheel: false,
+            draggable: false,
+            rotateControl: true,
+            disableDoubleClickZoom: true,
+        };
+        // マップオブジェクト作成
+        map = new google.maps.Map(
+            document.getElementById("map"), // マップを表示する要素
+            mapOptions // マップオプション
+        );
+        //markPos(pos_data);
+        startWatchPosition();
+
+        var length = cell * 2 + 2;
+        var points1 = new Array(length);
+        var points1_lat = new Array(points1.length);
+        points1_lat[0] = high;
+        var points1_lng = new Array(points1.length);
+        var n = low;
+        for (var i = 1; i < points1.length; i += 2) {
+            points1_lat[i] = n;
+            points1_lat[i + 1] = n;
+            if (n == high) {
+                n = low;
+            } else {
+                n = high;
+            }
+        }
+
+        var space1 = (right - left) / cell;
+        var n = left;
+        for (var i = 0; i < points1.length; i += 2) {
+            points1_lng[i] = n;
+            points1_lng[i + 1] = n;
+            n += space1;
+        }
+
+        for (i = 0; i < points1.length; i++) {
+            var lat = points1_lat[i];
+            var lng = points1_lng[i];
+            points1[i] = new google.maps.LatLng(lat, lng);
+        }
+
+        var points2 = new Array(length);
+        var points2_lat = new Array(length);
+        var points2_lng = new Array(length);
+        points2_lng[0] = left;
+
+        var m = right;
+        for (var i = 1; i < length; i += 2) {
+            points2_lng[i] = m;
+            points2_lng[i + 1] = m;
+            if (m == left) {
+                m = right;
+            } else {
+                m = left
+            }
+        }
+
+        var space2 = (high - low) / cell;
+        var m = high;
+        for (var i = 0; i < length; i += 2) {
+            points2_lat[i] = m;
+            points2_lat[i + 1] = m;
+            m -= space2;
+        }
+
+        for (var i = 0; i < length; i++) {
+            points2[i] = new google.maps.LatLng(points2_lat[i], points2_lng[i]);
+        }
+
+        var PolylineOptions1 = {
+            map: map,
+            path: points1,
+            strokeWeight: 5,
+            strokeColor: "#0000ff",
+            strokeOpacity: "0.5"
+        };
+
+        var PolylineOptions2 = {
+            map: map,
+            path: points2,
+            strokeWeight: 5,
+            strokeColor: "#0000ff",
+            strokeOpacity: "0.5"
+        };
+
+
+        var poly1 = new google.maps.Polyline(PolylineOptions1);
+        poly1.setMap(map);
+
+        var poly2 = new google.maps.Polyline(PolylineOptions2);
+        poly2.setMap(map);
+    }
+
+    google.maps.event.addDomListener(window, 'load', initMap);
+
+    function receive() {
+        var hostUrl = '/receive';
+        $.ajax({
+            // url: "http://192.168.17.140:8887/data.json",
+            // url: "https://pullpulldondon.github.io/pos.json",
+            //url: "https://polar-bastion-81724.herokuapp.com/receivePosition",
+            url: hostUrl,
+            type: "post",
+            dataType: "json",
+
+            success: function(res) {
+                console.log(res);
+                markPos(res);
+            },
+            error: function(res) {
+                console.log("ERROR");
+            }
+        });
+    }
+
+    function sendPosData() {
+        var hostUrl = '/update';
+        //if(name === "") return;
+        //pos.name = name;
+        $.ajax({
+            // url: "/",
+            url: hostUrl,
+            type: "post",
+            dataType: "json",
+            data: send_pos,
+
+            success: function(res) {
+                console.log("sendPosData: Success");
+                console.log(res);
+                if (res['msg'] == 'bomb') alert("Bomb!");
+            },
+            error: function(res) {
+                console.log("sendPosData: Error");
+                console.log(res);
+            }
+        });
+    }
+
+    var info = new Array();
+
+    $(function() {
+        $('#update').click(sendPosData)
+    });
+
+
+
+    /* $( function() {
+      $( '#ajax-button' ) .click(
+        function sendPosData(pos) {
+          var hostUrl= '/insert';
+          $.ajax({
+            url: hostUrl,
+            type:'POST',
+            dataType: "text",
+            //data : {"name" : "person1", "pos" : {"lat":10.00001, "long":10.00001}},
+            data : JSON.stringify(pos),
+            //timeout:10000,
+          }).done(function(data) {
+          console.log("ok");
+            console.log(data);
+          }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+            alert("error");
+          })
+        });
+    } );*/
+
+
+      function markPos(pos_data){
+          for(var arrCount = 0; arrCount < pos_data.length; arrCount++){
+              var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
+              var name = pos_data[arrCount].name;
+              /*var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
+                new google.maps.Size(73,51),
+                new google.maps.Point(0,0),
+                new google.maps.Point(19,51)
+              );*/
+              var marker = new google.maps.Marker({
+                  position: pos,
+                  map: map,
+                  title: name,
+                  //icon: icon
+              });
+
+              var _i = new google.maps.InfoWindow({
+                  map: map,
+                  content: name,
+                  disableAutoPan: true,
+                  position: pos
+              });
+
+              if(info[arrCount]){
+                info[arrCount].close();
+              }
+              info[arrCount] = _i;
+              info[arrCount].open(marker.getMap());
+
+        }
+    }
+
+    var infoWindow = new google.maps.InfoWindow;
+    /* */
+    function startWatchPosition() {
+        //Try HTML5 geolocation.
+        if (navigator.geolocation) {
+            //get a current position
+            navigator.geolocation.watchPosition(onWatchPosition, function(err) {
+                console.log('hell');
+                console.log(err);
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            //Browser doesnt support Geolocation.
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+    }
+
+    function onWatchPosition(position) {
+        //console.log(sucess);
+        //create a position object.
+
+        var pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+        };
+
+        send_pos = {
+            "name": name,
+            "pos": {
+                "lat": pos.lat,
+                "long": pos.lng
+            }
+        };
+
+        var markerOptions = {
+            position: pos,
+            map: map
+        };
+
+        //アイコンを表示させる記述
+        //var marker = new google.maps.Marker(markerOptions);
+    }
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        console.log('failed')
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+            'Error: The Geolocation service failed.' :
+            'Error: Your browser doesn\'t support geolocation');
+    }
+
+    initMap();
+    setInterval(receive.bind(this), 5000);
+    setInterval(sendPosData.bind(this), 5000);
+    </script>
+</body>
+
+</html>
