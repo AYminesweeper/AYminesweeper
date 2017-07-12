@@ -19,16 +19,21 @@
     body {
         margin: 0;
     }
+    
+    @media only screen and (max-width: 640px) {
+        #map-canvas {
+            width: 50%;
+            height: auto;
+        }
+    }
     </style>
 </head>
 
 <body>
     <div id="map"></div>
-
     <!--ダイアログの内容-->
     <div id="start-dialog" title="GAME START">
     </div>
-
     <script type="text/javascript">
     //setting
     var cell = 10; //マスの数
@@ -146,6 +151,9 @@
         poly2.setMap(map);
 
         google.maps.event.addListener(map, 'click', setlistener);
+        google.maps.event.addDomListener(window, 'resize', function() {
+            map.panTo(centerposition);
+        });
 
         if (callback) {
             callback();
@@ -181,9 +189,6 @@
     function receive() {
         var hostUrl = '/receive';
         $.ajax({
-            // url: "http://192.168.17.140:8887/data.json",
-            // url: "https://pullpulldondon.github.io/pos.json",
-            //url: "https://polar-bastion-81724.herokuapp.com/receivePosition",
             url: hostUrl,
             type: "post",
             dataType: "json",
@@ -213,7 +218,7 @@
                 position: pos,
                 map: map,
                 title: name,
-                icon: icon 
+                icon: icon
             });
 
             /*
@@ -247,11 +252,14 @@
                     }
                 });
             });
-        }, 5000);
+        }, 1000);
     };
 
     google.maps.event.addDomListener(window, 'load', initMap(start_dialog));
+
     setInterval(receive.bind(this), 5000); // init 関数のcallback
+
+    var canvas = document.getElementById("canvas");
     </script>
 </body>
 
