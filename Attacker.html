@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <title>document</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <style>
     #map {
         width: 100vw;
@@ -35,8 +37,6 @@
 
 <body>
     <div id="map"></div>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <script type="text/javascript">
     //setting
     var cell = 10; //マスの数
@@ -49,9 +49,9 @@
 
     var map;
     var send_pos;
-    var name = FORM["name"];
+    var g_name = FORM["name"];
 
-    function initMap() {
+    function initMap(callback) {
         // 緯度・経度を変数に格納
         //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
         var centerposition = new google.maps.LatLng(36.110732, 140.100619);
@@ -153,9 +153,11 @@
 
         var poly2 = new google.maps.Polyline(PolylineOptions2);
         poly2.setMap(map);
-    }
 
-    google.maps.event.addDomListener(window, 'load', initMap);
+        if (callback) {
+            callback();
+        }
+    }
 
     function receive() {
         var hostUrl = '/receive';
@@ -180,7 +182,7 @@
     function sendPosData() {
         var hostUrl = '/update';
         //if(name === "") return;
-        //pos.name = name;
+        //pos.name = g_name;
         $.ajax({
             // url: "/",
             url: hostUrl,
@@ -207,56 +209,43 @@
     });
 
 
+    function markPos(pos_data) {
+        for (var arrCount = 0; arrCount < pos_data.length; arrCount++) {
+            var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
+            var name = pos_data[arrCount].name;
+            var img_num = '2';
 
-    /* $( function() {
-      $( '#ajax-button' ) .click(
-        function sendPosData(pos) {
-          var hostUrl= '/insert';
-          $.ajax({
-            url: hostUrl,
-            type:'POST',
-            dataType: "text",
-            //data : {"name" : "person1", "pos" : {"lat":10.00001, "long":10.00001}},
-            data : JSON.stringify(pos),
-            //timeout:10000,
-          }).done(function(data) {
-          console.log("ok");
-            console.log(data);
-          }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-            alert("error");
-          })
-        });
-    } );*/
+            if(name == g_name)
+                img_num = '1';
+
+            var icon = new google.maps.MarkerImage('images/icon' + img_num + '.gif',
+              new google.maps.Size(73,51),
+              new google.maps.Point(0,0),
+              new google.maps.Point(19,51)
+            );
+            var marker = new google.maps.Marker({
+                position: pos,
+                map: map,
+                title: name,
+                icon: icon
+            });
 
 
-      function markPos(pos_data){
-          for(var arrCount = 0; arrCount < pos_data.length; arrCount++){
-              var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
-              var name = pos_data[arrCount].name;
-              /*var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
-                new google.maps.Size(73,51),
-                new google.maps.Point(0,0),
-                new google.maps.Point(19,51)
-              );*/
-              var marker = new google.maps.Marker({
-                  position: pos,
-                  map: map,
-                  title: name,
-                  //icon: icon
-              });
+            /*
+            var _i = new google.maps.InfoWindow({
+                map: map,
+                content: name,
+                disableAutoPan: true,
+                position: pos
+            });
 
-              var _i = new google.maps.InfoWindow({
-                  map: map,
-                  content: name,
-                  disableAutoPan: true,
-                  position: pos
-              });
-
-              if(info[arrCount]){
+            if (info[arrCount]) {
                 info[arrCount].close();
-              }
-              info[arrCount] = _i;
-              info[arrCount].open(marker.getMap());
+            }
+
+            info[arrCount] = _i;
+            info[arrCount].open(marker.getMap());
+            */
 
         }
     }
@@ -288,7 +277,7 @@
         };
 
         send_pos = {
-            "name": name,
+            "name": g_name,
             "pos": {
                 "lat": pos.lat,
                 "long": pos.lng
@@ -312,9 +301,12 @@
             'Error: Your browser doesn\'t support geolocation');
     }
 
-    initMap();
-    setInterval(receive.bind(this), 5000);
-    setInterval(sendPosData.bind(this), 5000);
+    google.maps.event.addDomListener(window, 'load', initMap(
+        function() {
+            setInterval(receive.bind(this), 5000);
+            setInterval(sendPosData.bind(this), 5000);
+        }
+    ));
     </script>
 </body>
 
