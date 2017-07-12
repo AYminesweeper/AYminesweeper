@@ -70,7 +70,6 @@
             document.getElementById("map"), // マップを表示する要素
             mapOptions // マップオプション
         );
-        //markPos(pos_data);
         startWatchPosition();
 
         var length = cell * 2 + 2;
@@ -203,6 +202,7 @@
     }
 
     var info = new Array();
+    var markers = new google.maps.MVCArray();
 
     $(function() {
         $('#update').click(sendPosData)
@@ -210,6 +210,11 @@
 
 
     function markPos(pos_data) {
+        markers.forEach(function(marker) {
+            marker.setMap(null);
+        });
+        markers = new google.maps.MVCArray();
+
         for (var arrCount = 0; arrCount < pos_data.length; arrCount++) {
             var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
             var name = pos_data[arrCount].name;
@@ -223,12 +228,17 @@
               new google.maps.Point(0,0),
               new google.maps.Point(19,51)
             );
+
             var marker = new google.maps.Marker({
                 position: pos,
                 map: map,
                 title: name,
                 icon: icon
             });
+
+
+            marker.setMap(map);
+            markers.push(marker);
 
 
             /*
@@ -250,7 +260,7 @@
         }
     }
 
-    var infoWindow = new google.maps.InfoWindow;
+    //var infoWindow = new google.maps.InfoWindow;
     /* */
     function startWatchPosition() {
         //Try HTML5 geolocation.
