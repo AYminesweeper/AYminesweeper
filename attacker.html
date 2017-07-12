@@ -1,4 +1,5 @@
-　<!DOCTYPE html>
+
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -50,13 +51,9 @@
     var map;
     var send_pos;
     var g_name = FORM["name"];
-
     </script>
     <script type="text/javascript" src="javascripts/initMap.js"></script>
     <script>
-
-
-
     function receive() {
         var hostUrl = '/receive';
         $.ajax({
@@ -101,25 +98,30 @@
     }
 
     var info = new Array();
-    var markers = new Array();
+    var markers = new google.maps.MVCArray();
 
     $(function() {
         $('#update').click(sendPosData)
     });
 
     function markPos(pos_data) {
+        markers.forEach(function(marker) {
+            marker.setMap(null);
+        });
+        markers = new google.maps.MVCArray();
+
         for (var arrCount = 0; arrCount < pos_data.length; arrCount++) {
             var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
             var name = pos_data[arrCount].name;
             var img_num = '2';
 
-            if(name == g_name)
+            if (name == g_name)
                 img_num = '1';
-            
+
             var icon = new google.maps.MarkerImage('images/icon' + img_num + '.gif',
-              new google.maps.Size(73,51),
-              new google.maps.Point(0,0),
-              new google.maps.Point(19,51)
+                new google.maps.Size(73, 51),
+                new google.maps.Point(0, 0),
+                new google.maps.Point(19, 51)
             );
             markers[arrCount] = new google.maps.Marker({
                 position: pos,
@@ -128,7 +130,6 @@
                 icon: icon
             });
 
-            markers[arrCount].setMap(null);
             markers[arrCount].setMap(map);
 
             /*
