@@ -33,8 +33,8 @@ router.get('/insert', function(req, res) {
     res.sendFile(path.resolve("./insert.html")); //path.resolve()で./insert.htmlを絶対パスに変換
 });
 
-router.get('/Attacker*', function(req, res) {
-    res.sendFile(path.resolve("./Attacker.html")); //path.resolve()で./index.htmlを絶対パスに変換
+router.get('/attacker*', function(req, res) {
+    res.sendFile(path.resolve("./attacker.html")); //path.resolve()で./index.htmlを絶対パスに変換
 });
 
 
