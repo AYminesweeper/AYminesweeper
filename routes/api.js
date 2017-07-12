@@ -70,7 +70,7 @@ router.post('/insert', function(req, res) {
 
 router.post('/update', function(req, res) {
     console.log("I'm in update.");
-    //console.log(req.body);
+    console.log(req.body);
     let name = req.body['name'],
         lat = req.body['pos'].lat,
         long = req.body['pos'].long;
