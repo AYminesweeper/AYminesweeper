@@ -13,7 +13,7 @@
         width: 100vw;
         height: 80vh;
     }
-    
+
     body {
         margin: 0;
     }
@@ -102,6 +102,7 @@
         $('#update').click(sendPosData)
     });
 
+
     function markPos(pos_data) {
         markers.forEach(function(marker) {
             marker.setMap(null);
@@ -129,8 +130,10 @@
                 icon: icon
             });
 
+
             marker.setMap(map);
             markers.push(marker);
+
 
             /*
             var _i = new google.maps.InfoWindow({
