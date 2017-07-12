@@ -192,7 +192,7 @@
         });
 
         //イベント追加
-        google.maps.event.addListener(map, 'click', setlistener);
+        google.maps.event.addListener(map, 'click', setListener);
         google.maps.event.addDomListener(window, 'resize', function() {
             map.panTo(centerposition);
         });
