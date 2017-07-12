@@ -85,21 +85,17 @@ router.post('/update', function(req, res) {
 
     db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
 
-    console.log("here1");
-
     if (isMine(getSquarePos(R_pos))) {
         db.run("UPDATE players SET is_survive = 0 WHERE name = ?", name);
         isDefenderWin();
         res.json({ msg: "bomb" });
     }
 
-    console.log("here2");
 
-    if (!isAttackerWin(getSquarePos(R_pos))) {
-        res.send(true);
-    }
+    isAttackerWin(getSquarePos(R_pos));
+    res.send(true);
 
-    console.log("here3");
+
 
 });
 
@@ -186,10 +182,7 @@ function isAttackerWin(SquarePos) {
     if (SquarePos.x == goal.x && SquarePos.y == goal.y) {
         //Attacker側勝利処理
         //Defender側ゲームオーバー処理
-        return true;
     }
-
-    return false;
 }
 
 

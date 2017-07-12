@@ -49,7 +49,7 @@
 
     var map;
     var send_pos;
-    var name = FORM["name"];
+    var g_name = FORM["name"];
 
     function initMap() {
         // 緯度・経度を変数に格納
@@ -180,7 +180,7 @@
     function sendPosData() {
         var hostUrl = '/update';
         //if(name === "") return;
-        //pos.name = name;
+        //pos.name = g_name;
         $.ajax({
             // url: "/",
             url: hostUrl,
@@ -210,10 +210,15 @@
         for (var arrCount = 0; arrCount < pos_data.length; arrCount++) {
             var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
             var name = pos_data[arrCount].name;
-            var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
-                new google.maps.Size(73, 51),
-                new google.maps.Point(0, 0),
-                new google.maps.Point(19, 51)
+            var img_num = '2';
+
+            if(name == g_name)
+                img_num = '1';
+            
+            var icon = new google.maps.MarkerImage('images/icon' + img_num + '.gif',
+              new google.maps.Size(73,51),
+              new google.maps.Point(0,0),
+              new google.maps.Point(19,51)
             );
             var marker = new google.maps.Marker({
                 position: pos,
@@ -222,32 +227,7 @@
                 icon: icon
             });
 
-            var _i = new google.maps.InfoWindow({
-                map: map,
-                content: name,
-                disableAutoPan: true,
-                position: pos
-            });
-        }
-    }
-
-
-    function markPos(pos_data) {
-        for (var arrCount = 0; arrCount < pos_data.length; arrCount++) {
-            var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
-            var name = pos_data[arrCount].name;
-            /*var icon = new google.maps.MarkerImage('http://www.yoshikiminatoya.com/sample/googlemap/03/images/ico_map.png',
-              new google.maps.Size(73,51),
-              new google.maps.Point(0,0),
-              new google.maps.Point(19,51)
-            );*/
-            var marker = new google.maps.Marker({
-                position: pos,
-                map: map,
-                title: name,
-                //icon: icon
-            });
-
+            /*
             var _i = new google.maps.InfoWindow({
                 map: map,
                 content: name,
@@ -261,6 +241,7 @@
 
             info[arrCount] = _i;
             info[arrCount].open(marker.getMap());
+            */
 
         }
     }
@@ -292,7 +273,7 @@
         };
 
         send_pos = {
-            "name": name,
+            "name": g_name,
             "pos": {
                 "lat": pos.lat,
                 "long": pos.lng

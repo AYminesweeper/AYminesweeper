@@ -204,8 +204,7 @@
         for (var arrCount = 0; arrCount < pos_data.length; arrCount++) {
             var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
             var name = pos_data[arrCount].name;
-
-            var icon = new google.maps.MarkerImage('images/icon.png',
+            var icon = new google.maps.MarkerImage('images/icon1.gif',
                 new google.maps.Size(73, 51),
                 new google.maps.Point(0, 0),
                 new google.maps.Point(19, 51)
@@ -217,6 +216,7 @@
                 icon: icon 
             });
 
+            /*
             var _i = new google.maps.InfoWindow({
                 map: map,
                 content: name,
@@ -229,7 +229,7 @@
             }
             info[arrCount] = _i;
             info[arrCount].open(marker.getMap(), marker);
-            
+            */
 
         }
     }
