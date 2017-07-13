@@ -51,11 +51,6 @@
                     { "color": "#808080" }
                 ]
             }, {
-                "elementType": "labels.text.fill",
-                "stylers": [
-                    { "color": "#808080" }
-                ]
-            }, {
                 "elementType": "labels",
                 "stylers": [
                     { "visibility": "off" }

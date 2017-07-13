@@ -47,10 +47,12 @@ router.post('/set', function(req, res) {
     console.log(req.body);
 
     let pos = getSquarePos(convertRelative(req.body));
-
+    console.log(pos);
     if (setMine(pos.x, pos.y)) {
         console.log(field);
         res.send(true);
+    } else {
+        res.send(null);
     }
 });
 
@@ -80,7 +82,7 @@ router.post('/update', function(req, res) {
     //console.log(getSquarePos(R_pos));
 
     updateValue(lat, long, name);
-
+    console.log(getSquarePos(R_pos));
     if (isMine(getSquarePos(R_pos))) {
         db.run("UPDATE players SET is_survive = 0 WHERE name = ?", name);
         isDefenderWin();
@@ -90,7 +92,7 @@ router.post('/update', function(req, res) {
 
     isAttackerWin(getSquarePos(R_pos));
     res.send(true);
-    
+
 });
 
 router.post('/receive', function(req, res) {
@@ -117,7 +119,7 @@ function createField() {
 }
 
 function setMine(x, y) {
-    if (x < square_num && y < square_num) {
+    if (x >= 0 && x < square_num && y >= 0 && y < square_num ) {
         field[y][x] = 1;
         return true;
     }
