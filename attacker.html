@@ -104,10 +104,6 @@
     var info = new Array();
     var markers = new google.maps.MVCArray();
 
-    $(function() {
-        $('#update').click(sendPosData)
-    });
-
     function markPos(pos_data) {
         markers.forEach(function(marker) {
             marker.setMap(null);
