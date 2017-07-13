@@ -150,7 +150,7 @@
         var poly2 = new google.maps.Polyline(PolylineOptions2);
         poly2.setMap(map);
 
-        google.maps.event.addListener(map, 'click', setlistener);
+        google.maps.event.addListener(map, 'click', setListener);
         google.maps.event.addDomListener(window, 'resize', function() {
             map.panTo(centerposition);
         });
