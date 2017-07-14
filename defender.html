@@ -20,6 +20,36 @@
         margin: 0;
     }
 
+    .win_effect {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.6);
+        transform: translateX(-100%);
+        transition: transform .2s;
+    }
+
+    .win_effect_on .lose_effect {
+        transform: translateX(0);
+    }
+
+    .lose_effect {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.6);
+        transform: translateX(-100%);
+        transition: transform .2s;
+    }
+
+    .lose_effect_on .lose_effect {
+        transform: translateX(0);
+    }
+
     @media only screen and (max-width: 640px) {
         #map-canvas {
             width: 50%;
@@ -27,72 +57,73 @@
         }
     }
     </style>
-    </hea d>
-
-    <body>
-        <div id="map"></div>
-        <div class="survivor"></div>
-        <!--ダイアログの内容-->
-        <div id="start-dialog" title="GAME START">
-        </div>
-        <script type="text/javascript">
-        //setting
-        var cell = 10; //マスの数
-        var high = 36.11204; //左上点の緯度
-        var low = 36.109698; //右下点の緯度
-        var left = 140.09901; //左上点の経度
-        var right = 140.102199; //右下点の経度
-        var latlng = [36.109899, 140.10176]; //爆弾設置
-
-
-        var map;
-        var send_pos;
+</head>
+<body>
+    <div id="map"></div>
+    <div class="lose_effect"></div>
+    <div class="win_effect"></div>
+    <!--ダイアログの内容-->
+    <div id="start-dialog" title="GAME START">
+    </div>
+    <script type="text/javascript">
+    //setting
+    var cell = 10; //マスの数
+    var high = 36.11204; //左上点の緯度
+    var low = 36.109698; //右下点の緯度
+    var left = 140.09901; //左上点の経度
+    var right = 140.102199; //右下点の経度
+    var latlng = [36.109899, 140.10176]; //爆弾設置
 
 
+    var map;
+    var send_pos;
 
-        function initMap(callback) {
-            // 緯度・経度を変数に格納
-            var centerposition = new google.maps.LatLng(36.110732, 140.100619);
 
-            // マップオプションを変数に格納
-            var mapOptions = {
-                zoom: 17,
-                center: centerposition, // 中心は現在地の緯度・経度
-                scrollwheel: false,
-                draggable: true,
-                mapTypeControl: false,
-                rotateControl: true,
-                zoomControl: true,
-                streetViewControl: false,
-                disableDoubleClickZoom: true,
-                styles: [{
-                    "elementType": "labels",
-                    "stylers": [{
-                        "visibility": "off"
-                    }]
+
+    function initMap(callback) {
+        // 緯度・経度を変数に格納
+        //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
+        var centerposition = new google.maps.LatLng(36.110732, 140.100619);
+
+        // マップオプションを変数に格納
+        var mapOptions = {
+            zoom: 17,
+            center: centerposition, // 中心は現在地の緯度・経度
+            scrollwheel: false,
+            draggable: false,
+            mapTypeControl: false,
+            rotateControl: true,
+            zoomControl: false,
+            streetViewControl: false,
+            disableDoubleClickZoom: true,
+            styles: [{
+                "elementType": "labels",
+                "stylers": [{
+                    "visibility": "off"
                 }]
-            };
-            // マップオブジェクト作成
-            map = new google.maps.Map(
-                document.getElementById("map"), // マップを表示する要素
-                mapOptions // マップオプション
-            );
-            //格子を描画
-            var length = cell * 2 + 2;
-            var points1 = new Array(length);
-            var points1_lat = new Array(points1.length);
-            points1_lat[0] = high;
-            var points1_lng = new Array(points1.length);
-            var n = low;
-            for (var i = 1; i < points1.length; i += 2) {
-                points1_lat[i] = n;
-                points1_lat[i + 1] = n;
-                if (n == high) {
-                    n = low;
-                } else {
-                    n = high;
-                }
+            }]
+        };
+        // マップオブジェクト作成
+        map = new google.maps.Map(
+            document.getElementById("map"), // マップを表示する要素
+            mapOptions // マップオプション
+        );
+
+        var length = cell * 2 + 2;
+        var points1 = new Array(length);
+        var points1_lat = new Array(points1.length);
+        points1_lat[0] = high;
+        var points1_lng = new Array(points1.length);
+        var n = low;
+        for (var i = 1; i < points1.length; i += 2) {
+            points1_lat[i] = n;
+            points1_lat[i + 1] = n;
+            if (n == high) {
+                n = low;
+            } else {
+                n = high;
             }
+        }
 
             var space1 = (right - left) / cell;
             var n = left;
@@ -257,26 +288,24 @@
                 dataType: "json",
 
                 success: function(res) {
-                    console.log(res);
-                    markPos(res);
-                    //survivor(res);
+                    if (res["winner"] == "defender") {
+                        console.log(res);
+                        console.log("defender win");
+                        Win();
+                    } else if (res['winner'] == 'attacker') {
+                        console.log(res);
+                        console.log("attacker win");
+                        Lose();
+                    } else {
+                        console.log(res);
+                        markPos(res);
+                        //survivor(res);
+                    }
                 },
                 error: function(res) {
                     console.log("ERROR");
                 }
             });
-        }
-
-        function survivor(players) {
-            var counter = 0;
-            $(".howMany").remove();
-            for (var i = 0; i < players.length; i++) {
-                if (players[i].is_survive) {
-                    counter += 1;
-                }
-            }
-            var dom = '<p class="howMany">' + counter + '</p>';
-            $(".survivor").append(dom);
         }
 
         var info = new Array();
@@ -320,12 +349,20 @@
             }, 1000);
         };
 
+        function Win() {
+            $("body").addClass("win_effect_on");
+        }
+
+        function Lose() {
+            $("body").addClass("lose_effect_on");
+        }
+
+
         google.maps.event.addDomListener(window, 'load', initMap(start_dialog));
 
         setInterval(receive.bind(this), 5000); // init 関数のcallback
 
         var canvas = document.getElementById("canvas");
-        </script>
-    </body>
-
+    </script>
+</body>
 </html>

@@ -17,6 +17,8 @@ var player_num; //プレイヤー数
 var dead_num; //ゲームオーバーになったプレイヤーの数
 
 var field = createField();
+var winner = null;
+
 console.log(field);
 
 var goal = { "x": 0, "y": 0 };
@@ -83,24 +85,29 @@ router.post('/update', function(req, res) {
     console.log(getSquarePos(R_pos));
     if (isMine(getSquarePos(R_pos))) {
         db.run("UPDATE players SET is_survive = 0 WHERE name = ?", name);
-        isDefenderWin();
+
+        isDefenderWin()
         res.json({ msg: "bomb" });
+    } else {
+        res.send(true);
     }
 
-
     isAttackerWin(getSquarePos(R_pos));
-    res.send(true);
 
 });
 
 router.post('/receive', function(req, res) {
     let name, lat, long;
-    db.all("SELECT * FROM players",
-        function(err, rows) {
-            //console.log(rows);
-            res.json(rows);
-            if (err) throw err;
-        });
+    if (winner != null) {
+        res.json({ winner: winner });
+    } else {
+        db.all("SELECT * FROM players",
+            function(err, rows) {
+                //console.log(rows);
+                res.json(rows);
+                if (err) throw err;
+            });
+    }
 });
 
 function createField() {
@@ -117,7 +124,7 @@ function createField() {
 }
 
 function setMine(x, y) {
-    if (x >= 0 && x < square_num && y >= 0 && y < square_num ) {
+    if (x >= 0 && x < square_num && y >= 0 && y < square_num) {
         field[y][x] = 1;
         return true;
     }
@@ -138,22 +145,20 @@ function updateValue(lat, long, name) {
     console.log("I'm in updateValue")
 
     db.get("SELECT lat as p_lat, long as p_long FROM players where name = ?", name, function(err, row) {
-        if (!(typeof row === "undefined")) {  //値が取得できなかった時にrowはundefinedになる
-            let p_lat = row.p_lat,            //p_lat : 前のlatの値  lat: 現在のlatの値
+        if (!(typeof row === "undefined")) { //値が取得できなかった時にrowはundefinedになる
+            let p_lat = row.p_lat, //p_lat : 前のlatの値  lat: 現在のlatの値
                 p_long = row.p_long;
 
-            let v_lat = lat - p_lat,          //v_lat : latの変化量
+            let v_lat = lat - p_lat, //v_lat : latの変化量
                 v_long = long - p_long;
 
             /* v_lat,v_longが1マスのサイズを越えた場合updateしない */
             if ((p_lat == 0 && p_long == 0) || (v_lat < square_sizeY && v_long < square_sizeX)) {
                 db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
-            }
-            else{
+            } else {
                 console.log("位置情報のブレが発生 (☝︎ ՞ਊ ՞)☝︎");
             }
-        }
-        else{
+        } else {
             console.log("Cat not update");
         }
     });
@@ -187,9 +192,8 @@ function isDefenderWin() {
             dead_num = res['COUNT(*)'];
             console.log("dead_num: " + dead_num);
             if (player_num == dead_num) {
-                console.log("Defender Win!!")
-                    //Attacker側ゲームオーバー処理
-                    //Defender側勝利処理
+                console.log("Defender Win!!");
+                winner = "defender"
             }
         });
     });
@@ -201,8 +205,8 @@ Defender側ゲームオーバー
 */
 function isAttackerWin(SquarePos) {
     if (SquarePos.x == goal.x && SquarePos.y == goal.y) {
-        //Attacker側勝利処理
-        //Defender側ゲームオーバー処理
+        console.log("Attacker Win!!")
+        winner = "attacker"
     }
 }
 
