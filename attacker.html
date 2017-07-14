@@ -12,11 +12,12 @@
         width: 100vw;
         height: 80vh;
     }
-    
+
     body {
         margin: 0;
     }
 
+<<<<<<< HEAD
     .win_effect {
         position: fixed;
         top: 0;
@@ -32,6 +33,14 @@
         transform: translateX(0);
     }
     
+=======
+    .survivor {
+      font-size: 1.4em;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+>>>>>>> 51e82369cc48436e2f51a8c983acc1fd04635a3d
     .lose_effect {
         position: fixed;
         top: 0;
@@ -42,11 +51,15 @@
         transform: translateX(-100%);
         transition: transform .2s;
     }
+<<<<<<< HEAD
     
     .lose_effect_on .lose_effect {
+=======
+
+    .effect_on .lose_effect {
+>>>>>>> 51e82369cc48436e2f51a8c983acc1fd04635a3d
         transform: translateX(0);
     }
-
     </style>
     <!-- insert.htmlからGETで送られてきたnameを取得 -->
     <script>
@@ -68,10 +81,18 @@
 
 <body>
     <div id="map"></div>
+<<<<<<< HEAD
     <div class="lose_effect"></div>
     <div class="win_effect"></div>
     <div class="survivor">
+=======
+    <div class="horver">
+      <img class="survivor" src="images/icon1.gif" alt="" width=30vw height=50vh>
+      <div class="survivor"></div>
+>>>>>>> 51e82369cc48436e2f51a8c983acc1fd04635a3d
     </div>
+    <div class="lose_effect"></div>
+
     <script type="text/javascript">
     //setting
     var cell = 10; //マスの数
@@ -204,8 +225,10 @@
                 counter += 1;
             }
         }
-        var dom = '<p class="howMany">' + counter + '</p>';
-        $(".survivor").append(dom);
+      }
+      var dom = '<p class="howMany"> ×'+counter+'</p>';
+      $(".survivor").append(dom);
+
     }
 
     //var infoWindow = new google.maps.InfoWindow;
