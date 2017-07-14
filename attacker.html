@@ -108,12 +108,8 @@
         });
     }
 
-    var info = new Array();
+    //var info = new Array();
     var markers = new google.maps.MVCArray();
-
-    $(function() {
-        $('#update').click(sendPosData)
-    });
 
     function markPos(pos_data) {
         markers.forEach(function(marker) {
@@ -129,12 +125,8 @@
             if (name == g_name)
                 img_num = '1';
 
-            var icon = new google.maps.MarkerImage('images/icon' + img_num + '.gif',
-                new google.maps.Size(73, 51),
-                new google.maps.Point(0, 0),
-                new google.maps.Point(19, 51)
-            );
-            marker = new google.maps.Marker({
+            var icon = new google.maps.MarkerImage('images/icon' + img_num + '.gif',);
+            var marker = new google.maps.Marker({
                 position: pos,
                 map: map,
                 title: name,
