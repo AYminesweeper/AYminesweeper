@@ -106,6 +106,9 @@
                 <a href="#modal-1" class="cd-modal-trigger" id="bomb"></a>
                 <div class="dom_space"></div>
                 <div class="add_map"></div>
+                <div class="img_space">
+                    <div class="num_space"></div>
+                </div>
             </div>
             <div class="cd-modal" id="modal-1">
                 <div class="modal-content">
@@ -119,10 +122,10 @@
         </div>
     </div>
 
-    <div class="horver">
-        <img class="survivor" src="images/icon1.gif" alt="" width=30vw height=50vh>
-        <div class="survivor"></div>
-    </div>
+    
+    <img class="survivor" src="images/icon1.gif" alt="" width=30vw height=50vh>
+    <div class="survivor"></div>
+
     <div class="lose_effect"></div>
     <script type="text/javascript">
     //setting
@@ -137,6 +140,7 @@
     var map;
     var send_pos;
     var g_name = FORM["name"];
+    var bomb_flug = true;
     </script>
     <script type="text/javascript" src="javascripts/initMap.js"></script>
     <script src="javascripts/modernizr.js"></script>
@@ -153,6 +157,10 @@
             dataType: "json",
 
             success: function(res) {
+                console.log(res);
+                markPos(res);
+                survivor(res);
+
                 if (res['winner'] == 'defender') {
                     console.log(res);
                     console.log("defender win");
@@ -161,10 +169,6 @@
                     console.log(res);
                     console.log("attacker win");
                     Win();
-                } else {
-                    console.log(res);
-                    markPos(res);
-                    survivor(res);
                 }
             },
             error: function(res) {
@@ -187,9 +191,9 @@
             success: function(res) {
                 console.log("sendPosData: Success");
                 console.log(res);
-                if (res['msg'] == 'bomb') {
-                    //alert("Bomb!");
+                if (res['msg'] == 'bomb' && bomb_flug) {
                     Bomb();
+                    bomb_flug = false;
                 }
             },
             error: function(res) {
@@ -330,7 +334,8 @@
     }
 
     function Bomb() {
-        var dom = '<h1>You Died</h1>';
+        var dom = '<h1>YOU ARE DEAD</h1>';
+        var img = '<img class="survivor" src="images/icon1.gif" alt="" width=30vw height=50vh>';
 
         $("body").addClass("bomb_effect_on");
         $('#bomb').trigger('click');
@@ -339,7 +344,10 @@
         setTimeout(function() {
             $(".cd-main-content .dom_space").append(dom);
             $('.bomb_effect .add_map').attr('id', 'map');
+            $(".cd-main-content .img_space").prepend(img);
+            $(".cd-main-content .img_space .num_space").addClass("survivor"); 
             initMap();
+
         }, 500);
     }
 

@@ -90,7 +90,6 @@ router.post('/update', function(req, res) {
 
         isDefenderWin()
         res.json({ msg: "bomb" });
-
     } else {
         res.send(true);
     }
