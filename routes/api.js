@@ -101,7 +101,7 @@ router.post('/update', function(req, res) {
 
 router.post('/receive', function(req, res) {
     let name, lat, long;
-    if (winner == "defender") {
+    if (winner != null) {
         res.json({ winner: winner });
     } else {
         db.all("SELECT * FROM players",
@@ -209,8 +209,7 @@ Defender側ゲームオーバー
 function isAttackerWin(SquarePos) {
     if (SquarePos.x == goal.x && SquarePos.y == goal.y) {
         console.log("Attacker Win!!")
-            //Attacker側勝利処理
-            //Defender側ゲームオーバー処理
+        winner = "attacker"
     }
 }
 

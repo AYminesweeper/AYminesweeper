@@ -16,6 +16,21 @@
     body {
         margin: 0;
     }
+
+    .win_effect {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        transform: translateX(-100%);
+        transition: transform .2s;
+    }
+    
+    .win_effect_on .lose_effect {
+        transform: translateX(0);
+    }
     
     .lose_effect {
         position: fixed;
@@ -28,7 +43,7 @@
         transition: transform .2s;
     }
     
-    .effect_on .lose_effect {
+    .lose_effect_on .lose_effect {
         transform: translateX(0);
     }
 
@@ -54,6 +69,7 @@
 <body>
     <div id="map"></div>
     <div class="lose_effect"></div>
+    <div class="win_effect"></div>
     <div class="survivor">
     </div>
     <script type="text/javascript">
@@ -87,6 +103,10 @@
                     console.log(res);
                     console.log("defender win");
                     Lose();
+                } else if (res['winner'] == 'attacker'){
+                    console.log(res);
+                    console.log("attacker win");
+                    Win();
                 } else {
                     console.log(res);
                     markPos(res);
@@ -246,11 +266,11 @@
     }
 
     function Win() {
-        //$("body").addClass("menu_open");
+        $("body").addClass("win_effect_on");
     }
 
     function Lose() {
-        $("body").addClass("effect_on");
+        $("body").addClass("lose_effect_on");
     }
 
     google.maps.event.addDomListener(window, 'load', initMap(
