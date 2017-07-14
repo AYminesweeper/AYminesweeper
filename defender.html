@@ -15,11 +15,11 @@
         width: 100vw;
         height: 80vh;
     }
-
+    
     body {
         margin: 0;
     }
-
+    
     @media only screen and (max-width: 640px) {
         #map-canvas {
             width: 50%;
@@ -65,12 +65,11 @@
             zoomControl: false,
             streetViewControl: false,
             disableDoubleClickZoom: true,
-            styles: [
-            {
+            styles: [{
                 "elementType": "labels",
-                "stylers": [
-                    { "visibility": "off" }
-                ]
+                "stylers": [{
+                    "visibility": "off"
+                }]
             }]
         };
         // マップオブジェクト作成
@@ -204,9 +203,15 @@
             dataType: "json",
 
             success: function(res) {
-                console.log(res);
-                markPos(res);
-                //survivor(res);
+                if (res['winner'] == 'defender') {
+                    console.log(res);
+                    console.log("defender win");
+                    //Win();
+                } else {
+                    console.log(res);
+                    markPos(res);
+                    //survivor(res);
+                }
             },
             error: function(res) {
                 console.log("ERROR");
