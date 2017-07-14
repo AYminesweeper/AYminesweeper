@@ -11,7 +11,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <style>
-
     #map {
         width: 100vw;
         height: 80vh;
@@ -28,280 +27,305 @@
         }
     }
     </style>
-</hea d>
+    </hea d>
 
-<body>
-    <div id="map"></div>
-    <div class="survivor"></div>
-    <!--ダイアログの内容-->
-    <div id="start-dialog" title="GAME START">
-    </div>
-    <script type="text/javascript">
-    //setting
-    var cell = 10; //マスの数
-    var high = 36.11204; //左上点の緯度
-    var low = 36.109698; //右下点の緯度
-    var left = 140.09901; //左上点の経度
-    var right = 140.102199; //右下点の経度
-    var latlng = [36.109899, 140.10176]; //爆弾設置
-
-
-    var map;
-    var send_pos;
+    <body>
+        <div id="map"></div>
+        <div class="survivor"></div>
+        <!--ダイアログの内容-->
+        <div id="start-dialog" title="GAME START">
+        </div>
+        <script type="text/javascript">
+        //setting
+        var cell = 10; //マスの数
+        var high = 36.11204; //左上点の緯度
+        var low = 36.109698; //右下点の緯度
+        var left = 140.09901; //左上点の経度
+        var right = 140.102199; //右下点の経度
+        var latlng = [36.109899, 140.10176]; //爆弾設置
 
 
+        var map;
+        var send_pos;
 
-    function initMap(callback) {
-        // 緯度・経度を変数に格納
-        var centerposition = new google.maps.LatLng(36.110732, 140.100619);
 
-        // マップオプションを変数に格納
-        var mapOptions = {
-            zoom: 17,
-            center: centerposition, // 中心は現在地の緯度・経度
-            scrollwheel: false,
-            draggable: false,
-            rotateControl: true,
-            disableDoubleClickZoom: true,
-        };
-        // マップオブジェクト作成
-        map = new google.maps.Map(
-            document.getElementById("map"), // マップを表示する要素
-            mapOptions // マップオプション
+
+        function initMap(callback) {
+            // 緯度・経度を変数に格納
+            var centerposition = new google.maps.LatLng(36.110732, 140.100619);
+
+            // マップオプションを変数に格納
+            var mapOptions = {
+                zoom: 17,
+                center: centerposition, // 中心は現在地の緯度・経度
+                scrollwheel: false,
+                draggable: true,
+                mapTypeControl: false,
+                rotateControl: true,
+                zoomControl: true,
+                streetViewControl: false,
+                disableDoubleClickZoom: true,
+                styles: [{
+                    "elementType": "labels",
+                    "stylers": [{
+                        "visibility": "off"
+                    }]
+                }]
+            };
+            // マップオブジェクト作成
+            map = new google.maps.Map(
+                document.getElementById("map"), // マップを表示する要素
+                mapOptions // マップオプション
             );
-        //格子を描画
-        var length = cell * 2 + 2;
-        var points1 = new Array(length);
-        var points1_lat = new Array(points1.length);
-        points1_lat[0] = high;
-        var points1_lng = new Array(points1.length);
-        var n = low;
-        for (var i = 1; i < points1.length; i += 2) {
-            points1_lat[i] = n;
-            points1_lat[i + 1] = n;
-            if (n == high) {
-                n = low;
-            } else {
-                n = high;
+            //格子を描画
+            var length = cell * 2 + 2;
+            var points1 = new Array(length);
+            var points1_lat = new Array(points1.length);
+            points1_lat[0] = high;
+            var points1_lng = new Array(points1.length);
+            var n = low;
+            for (var i = 1; i < points1.length; i += 2) {
+                points1_lat[i] = n;
+                points1_lat[i + 1] = n;
+                if (n == high) {
+                    n = low;
+                } else {
+                    n = high;
+                }
+            }
+
+            var space1 = (right - left) / cell;
+            var n = left;
+            for (var i = 0; i < points1.length; i += 2) {
+                points1_lng[i] = n;
+                points1_lng[i + 1] = n;
+                n += space1;
+            }
+
+            for (i = 0; i < points1.length; i++) {
+                var lat = points1_lat[i];
+                var lng = points1_lng[i];
+                points1[i] = new google.maps.LatLng(lat, lng);
+                console.log(lat + "," + lng);
+            }
+
+            var points2 = new Array(length);
+            var points2_lat = new Array(length);
+            var points2_lng = new Array(length);
+            points2_lng[0] = left;
+
+            var m = right;
+            for (var i = 1; i < length; i += 2) {
+                points2_lng[i] = m;
+                points2_lng[i + 1] = m;
+                if (m == left) {
+                    m = right;
+                } else {
+                    m = left
+                }
+            }
+
+            var space2 = (high - low) / cell;
+            var m = high;
+            for (var i = 0; i < length; i += 2) {
+                points2_lat[i] = m;
+                points2_lat[i + 1] = m;
+                m -= space2;
+            }
+
+            for (var i = 0; i < length; i++) {
+                points2[i] = new google.maps.LatLng(points2_lat[i], points2_lng[i]);
+            }
+
+            var PolylineOptions1 = {
+                map: map,
+                path: points1,
+                strokeWeight: 5,
+                strokeColor: "#0000ff",
+                strokeOpacity: "0.5"
+            };
+
+            var PolylineOptions2 = {
+                map: map,
+                path: points2,
+                strokeWeight: 5,
+                strokeColor: "#0000ff",
+                strokeOpacity: "0.5"
+            };
+
+
+            var poly1 = new google.maps.Polyline(PolylineOptions1);
+            poly1.setMap(map);
+
+            var poly2 = new google.maps.Polyline(PolylineOptions2);
+            poly2.setMap(map);
+
+            //地雷パネルN
+            map.data.loadGeoJson('json/minemarker.json');
+            map.data.setStyle({
+                fillColor: '#0000ff',
+                fillOpacity: 0.01,
+                strokeWeight: 0.5,
+                clickable: true,
+                zIndex: 1
+            });
+
+
+            map.data.addListener('click', setMineListener);
+            //イベント追加
+            //google.maps.event.addListener(map, 'click', setListener);
+            google.maps.event.addDomListener(window, 'resize', function() {
+                map.panTo(centerposition);
+            });
+
+            if (callback) {
+                callback();
             }
         }
 
-        var space1 = (right - left) / cell;
-        var n = left;
-        for (var i = 0; i < points1.length; i += 2) {
-            points1_lng[i] = n;
-            points1_lng[i + 1] = n;
-            n += space1;
+        function setMineListener(event) {
+            console.log(event.feature.getProperty('name'));
+            console.log(event.feature.getProperty('position').x);
+            console.log(event.feature.getProperty('position').y);
+
+            var hostUrl = '/set';
+            var x = event.feature.getProperty('position').x;
+            var y = event.feature.getProperty('position').y;
+
+            $.ajax({
+                url: hostUrl,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    "x": x,
+                    "y": y
+                },
+                success: function(res) {
+                    console.log("set: Success");
+                    console.log(res);
+                    changeCellColor(event);
+                },
+                error: function(res) {
+                    console.log("set: Error");
+                    //console.log(res);
+                }
+            });
         }
 
-        for (i = 0; i < points1.length; i++) {
-            var lat = points1_lat[i];
-            var lng = points1_lng[i];
-            points1[i] = new google.maps.LatLng(lat, lng);
+        function changeCellColor(event) {
+            map.data.overrideStyle(event.feature, {
+                fillColor: '#ff0000',
+                fillOpacity: 0.5,
+                strokeWeight: 0,
+                clickable: false,
+                zIndex: 1
+            });
         }
 
-        var points2 = new Array(length);
-        var points2_lat = new Array(length);
-        var points2_lng = new Array(length);
-        points2_lng[0] = left;
+        function setListener(event) {
+            let lat = event.latLng.lat();
+            let long = event.latLng.lng();
 
-        var m = right;
-        for (var i = 1; i < length; i += 2) {
-            points2_lng[i] = m;
-            points2_lng[i + 1] = m;
-            if (m == left) {
-                m = right;
-            } else {
-                m = left
-            }
+            var hostUrl = '/set';
+            $.ajax({
+                url: hostUrl,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    "long": long,
+                    "lat": lat
+                },
+                success: function(res) {
+                    console.log("set: Success");
+                    console.log(res);
+                    changeColorCell(res);
+                },
+                error: function(res) {
+                    console.log("set: Error");
+                    //console.log(res);
+                }
+            });
+
+            console.log(latlng);
         }
 
-        var space2 = (high - low) / cell;
-        var m = high;
-        for (var i = 0; i < length; i += 2) {
-            points2_lat[i] = m;
-            points2_lat[i + 1] = m;
-            m -= space2;
+        function receive() {
+            var hostUrl = '/receive';
+            $.ajax({
+                url: hostUrl,
+                type: "post",
+                dataType: "json",
+
+                success: function(res) {
+                    console.log(res);
+                    markPos(res);
+                    //survivor(res);
+                },
+                error: function(res) {
+                    console.log("ERROR");
+                }
+            });
         }
-
-        for (var i = 0; i < length; i++) {
-            points2[i] = new google.maps.LatLng(points2_lat[i], points2_lng[i]);
-        }
-
-        var PolylineOptions1 = {
-            map: map,
-            path: points1,
-            strokeWeight: 5,
-            strokeColor: "#0000ff",
-            strokeOpacity: "0.5"
-        };
-
-        var PolylineOptions2 = {
-            map: map,
-            path: points2,
-            strokeWeight: 5,
-            strokeColor: "#0000ff",
-            strokeOpacity: "0.5"
-        };
-
-
-        var poly1 = new google.maps.Polyline(PolylineOptions1);
-        poly1.setMap(map);
-
-        var poly2 = new google.maps.Polyline(PolylineOptions2);
-        poly2.setMap(map);
-
-
-        //地雷パネル
-        map.data.loadGeoJson('minemarker.geojson');
-
-        map.data.setStyle(function(feature) {
-            if (feature.getProperty('type') === 'point') {
-                // マーカーのスタイル
-                return ({
-                    icon: {
-                        url: feature.getProperty('icon'),
-                        scaledSize: new google.maps.Size(32, 32)
-                    }
-                });
-            } else if (feature.getProperty('type') === 'polyline') {
-                // ポリラインのスタイル
-                return ({
-                    strokeColor: '#0000ff',
-                    strokeWeight: 2,
-                    clickable: true,
-                    zIndex: 1
-                });
-            } else if (feature.getProperty('type') === 'polygon') {
-                // ポリゴンのスタイル
-                return ({
-                    fillColor: '#ff0000',
-                    fillOpacity: 0.5,
-                    strokeWeight: 0,
-                    clickable: true,
-                    zIndex: 1
-                });
-            }
-        });
-
-        map.data.addListener('click', function(event) {
-            // 表示位置
-            infoWindow.setPosition(event.latLng);
-            // InfoWindow内のの内容
-            infoWindow.setContent('<h3>' + event.feature.getProperty('name') + '</h3><br/>' + event.feature.getProperty('description'));
-            // IndowWindowを表示
-            infoWindow.open(_map);
-        });
-
-        //イベント追加
-        google.maps.event.addListener(map, 'click', setListener);
-        google.maps.event.addDomListener(window, 'resize', function() {
-            map.panTo(centerposition);
-        });
-
-        if (callback) {
-            callback();
-        }
-    }
-
-    function setListener(event) {
-        let lat = event.latLng.lat();
-        let long = event.latLng.lng();
-
-        var hostUrl = '/set';
-        $.ajax({
-            url: hostUrl,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                "long": long,
-                "lat": lat
-            },
-            success: function(res) {
-                console.log("set: Success");
-                console.log(res);
-            },
-            error: function(res) {
-                console.log("set: Error");
-                console.log(res);
-            }
-        });
-
-        console.log(latlng);
-    }
-
-    function receive() {
-        var hostUrl = '/receive';
-        $.ajax({
-            url: hostUrl,
-            type: "post",
-            dataType: "json",
-
-            success: function(res) {
-                console.log(res);
-                markPos(res);
-                survivor(res);
-            },
-            error: function(res) {
-                console.log("ERROR");
-            }
-        });
-    }
 
         function survivor(players) {
-      var counter = 0;
-      $(".howMany").remove();
-      for (var i = 0; i < players.length; i++) {
-        if (players[i].is_survive) {
-          counter += 1;
+            var counter = 0;
+            $(".howMany").remove();
+            for (var i = 0; i < players.length; i++) {
+                if (players[i].is_survive) {
+                    counter += 1;
+                }
+            }
+            var dom = '<p class="howMany">' + counter + '</p>';
+            $(".survivor").append(dom);
         }
-      }
-      var dom = '<p class="howMany">'+counter+'</p>';
-      $(".survivor").append(dom);
-    }
 
-    var info = new Array();
+        var info = new Array();
+        var markers = new google.maps.MVCArray();
 
-    function markPos(pos_data) {
-        for (var arrCount = 0; arrCount < pos_data.length; arrCount++) {
-            var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
-            var name = pos_data[arrCount].name;
-            var icon = new google.maps.MarkerImage('images/icon1.gif',
-                new google.maps.Size(73, 51),
-                new google.maps.Point(0, 0),
-                new google.maps.Point(19, 51)
-                );
-            var marker = new google.maps.Marker({
-                position: pos,
-                map: map,
-                title: name,
-                icon: icon
+
+        function markPos(pos_data) {
+            markers.forEach(function(marker) {
+                marker.setMap(null);
             });
-        }
-    }
+            markers = new google.maps.MVCArray();
 
-    var start_dialog = function() {
-        setTimeout(function() {
-            $(function() {
-                $("#start-dialog").html("<p><span>爆弾を設置して下さい！</span></p>")
-                $("#start-dialog").dialog({
-                    modal: true,
-                    buttons: {
-                        OK: function() {
-                            $(this).dialog("close");
-                        }
-                    }
+            for (var arrCount = 0; arrCount < pos_data.length; arrCount++) {
+                var pos = new google.maps.LatLng(pos_data[arrCount].lat, pos_data[arrCount].long);
+                var name = pos_data[arrCount].name;
+                var icon = new google.maps.MarkerImage('images/icon1.gif');
+                var marker = new google.maps.Marker({
+                    position: pos,
+                    map: map,
+                    title: name,
+                    icon: icon
                 });
-            });
-        }, 1000);
-    };
+                marker.setMap(map);
+                markers.push(marker);
+            }
+        }
 
-    google.maps.event.addDomListener(window, 'load', initMap(start_dialog));
+        var start_dialog = function() {
+            setTimeout(function() {
+                $(function() {
+                    $("#start-dialog").html("<p><span>爆弾を設置して下さい！</span></p>")
+                    $("#start-dialog").dialog({
+                        modal: true,
+                        buttons: {
+                            OK: function() {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                });
+            }, 1000);
+        };
 
-    setInterval(receive.bind(this), 5000); // init 関数のcallback
+        google.maps.event.addDomListener(window, 'load', initMap(start_dialog));
 
-    var canvas = document.getElementById("canvas");
-</script>
-</body>
+        setInterval(receive.bind(this), 5000); // init 関数のcallback
+
+        var canvas = document.getElementById("canvas");
+        </script>
+    </body>
 
 </html>
