@@ -7,29 +7,39 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,700|Merriweather+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="stylesheets/reset.css">
+    <!-- CSS reset -->
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <!-- Resource style -->
     <style>
     #map {
         width: 100vw;
         height: 80vh;
+        z-index: 10;
     }
-
+    
     body {
         margin: 0;
     }
-
+    
     .survivor {
-      font-size: 1.4em;
-      display: inline-block;
-      vertical-align: middle;
+        font-size: 1.4em;
+        display: inline-block;
+        vertical-align: middle;
     }
 
+    .dom_space {
+        width: 100%;
+    }
+    
     .win_effect {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(255, 255, 255, 0.9);
+        background-color: rgba(255, 255, 255, 0.6);
         transform: translateX(-100%);
         transition: transform .2s;
     }
@@ -44,12 +54,27 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(255, 255, 255, 0.9);
+        background-color: rgba(255, 255, 255, 0.6);
         transform: translateX(-100%);
         transition: transform .2s;
     }
     
     .lose_effect_on .lose_effect {
+        transform: translateX(0);
+    }
+    
+    .bomb_effect {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.6);
+        transform: translateX(-100%);
+        transition: transform .05s;
+    }
+    
+    .bomb_effect_on .bomb_effect {
         transform: translateX(0);
     }
     </style>
@@ -72,15 +97,33 @@
 </head>
 
 <body>
-    <div id="map"></div>
+    <div class="map_class" id="map"></div>
     <div class="lose_effect"></div>
     <div class="win_effect"></div>
+    <div class="bomb_effect">
+        <div class="extinguisher-transition">
+            <div class="cd-main-content">
+                <a href="#modal-1" class="cd-modal-trigger" id="bomb"></a>
+                <div class="dom_space"></div>
+                <div class="add_map"></div>
+            </div>
+            <div class="cd-modal" id="modal-1">
+                <div class="modal-content">
+                    <h2>Bomb!!</h2>
+                </div>
+                <a href="#0" class="modal-close">Close</a>
+            </div>
+            <div class="cd-transition-layer" data-frame="25">
+            <div class="bg-layer"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="horver">
-      <img class="survivor" src="images/icon1.gif" alt="" width=30vw height=50vh>
-      <div class="survivor"></div>
+        <img class="survivor" src="images/icon1.gif" alt="" width=30vw height=50vh>
+        <div class="survivor"></div>
     </div>
     <div class="lose_effect"></div>
-
     <script type="text/javascript">
     //setting
     var cell = 10; //マスの数
@@ -96,6 +139,8 @@
     var g_name = FORM["name"];
     </script>
     <script type="text/javascript" src="javascripts/initMap.js"></script>
+    <script src="javascripts/modernizr.js"></script>
+    <script src="javascripts/main.js"></script>
     <script>
     function receive() {
         var hostUrl = '/receive';
@@ -108,11 +153,11 @@
             dataType: "json",
 
             success: function(res) {
-                if (res['winner'] == 'defender'){
+                if (res['winner'] == 'defender') {
                     console.log(res);
                     console.log("defender win");
                     Lose();
-                } else if (res['winner'] == 'attacker'){
+                } else if (res['winner'] == 'attacker') {
                     console.log(res);
                     console.log("attacker win");
                     Win();
@@ -142,8 +187,10 @@
             success: function(res) {
                 console.log("sendPosData: Success");
                 console.log(res);
-                if (res['msg'] == 'bomb')
-                    alert("Bomb!");
+                if (res['msg'] == 'bomb') {
+                    //alert("Bomb!");
+                    Bomb();
+                }
             },
             error: function(res) {
                 console.log("sendPosData: Error");
@@ -212,9 +259,9 @@
             if (players[i].is_survive) {
                 counter += 1;
             }
-        var dom = '<p class="howMany"> ×'+counter+'</p>';
+        }
+        var dom = '<p class="howMany"> ×' + counter + '</p>';
         $(".survivor").append(dom);
-    }
     }
 
     //var infoWindow = new google.maps.InfoWindow;
@@ -282,13 +329,26 @@
         $("body").addClass("lose_effect_on");
     }
 
+    function Bomb() {
+        var dom = '<h1>You Died</h1>';
+
+        $("body").addClass("bomb_effect_on");
+        $('#bomb').trigger('click');
+        $('.map_class').removeAttr('id')
+
+        setTimeout(function() {
+            $(".cd-main-content .dom_space").append(dom);
+            $('.bomb_effect .add_map').attr('id', 'map');
+            initMap();
+        }, 500);
+    }
+
     google.maps.event.addDomListener(window, 'load', initMap(
         function() {
             setInterval(receive.bind(this), 5000);
             //setInterval(sendPosData.bind(this), 5000);
         }
     ));
-
     </script>
 </body>
 
