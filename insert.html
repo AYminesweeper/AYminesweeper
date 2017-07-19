@@ -73,6 +73,9 @@
     </style>
   </head>
   <body>
+     <audio id="sound-file" preload="auto">
+        <source src="sounds/button_bomb.mp3" type="audio/mp3">
+    </audio>
     <div class="login">
     <h1><i class="fa fa-bomb fa-2x"></i>Real Bomb</h1>
     <p>Plese enter your user name.</p>
@@ -89,8 +92,10 @@
         console.log($('#insert'));
             $( '#insert' ) .click(
               function() {
+                $('#sound-file').get(0).play();
                 var hostUrl= '/insert';
                 var name = document.getElementById("p_name");
+                var delay = 500;
                 $.ajax({
                   url: hostUrl,
                   type:'POST',
@@ -99,7 +104,9 @@
                 }).done(function(data) {
                   console.log("ok");
                   console.log(data);
-                  location.href = "/attacker?" + "name=" + name.value;
+                  setTimeout(function() {
+                    location.href = "/attacker?" + "name=" + name.value;
+                  }, delay);
                 }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
                   alert("error");
                 })
