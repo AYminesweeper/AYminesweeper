@@ -19,16 +19,19 @@ var dead_num; //ゲームオーバーになったプレイヤーの数
 var field = createField();
 var winner = null;
 
+var def_exist = false;
+
 console.log(field);
 
 var goal = { "x": 0, "y": 0 };
 
 router.get('/', function(req, res) {
-    res.sendFile(path.resolve("./menu.html")); //path.resolve()で./insert.htmlを絶対パスに変換
+    res.sendFile(path.resolve("./menu.html")); 
 });
 
 router.get('/defender', function(req, res) {
-    res.sendFile(path.resolve("./defender.html")); //path.resolve()で./insert.htmlを絶対パスに変換
+    res.sendFile(path.resolve("./defender.html"));
+    def_exist = true;
 });
 
 router.get('/insert', function(req, res) {
@@ -36,7 +39,7 @@ router.get('/insert', function(req, res) {
 });
 
 router.get('/attacker*', function(req, res) {
-    res.sendFile(path.resolve("./attacker.html")); //path.resolve()で./index.htmlを絶対パスに変換
+    res.sendFile(path.resolve("./attacker.html"));
 });
 
 
@@ -120,6 +123,10 @@ router.post('/receive', function(req, res) {
                 if (err) throw err;
             });
     }
+});
+
+router.post('/is_def_exist', function(req, res) {
+        res.json({ def_exist : def_exist });
 });
 
 function createField() {

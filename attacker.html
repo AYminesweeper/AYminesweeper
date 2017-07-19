@@ -199,9 +199,6 @@
     function receive() {
         var hostUrl = '/receive';
         $.ajax({
-            // url: "http://192.168.17.140:8887/data.json",
-            // url: "https://pullpulldondon.github.io/pos.json",
-            //url: "https://polar-bastion-81724.herokuapp.com/receivePosition",
             url: hostUrl,
             type: "post",
             dataType: "json",
@@ -229,8 +226,6 @@
 
     function sendPosData() {
         var hostUrl = '/update';
-        //if(name === "") return;
-        //pos.name = g_name;
         $.ajax({
             // url: "/",
             url: hostUrl,
