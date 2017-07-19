@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>insert</title>
     <meta name="viewport" content="width=360,initial-scale=1">
     <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <style media="screen">
-      body {
+    body {
         background-color: #e93741;
-      }
+    }
 
-      .login {
+    .login {
         width: 60vw;
         height: 60vh;
         margin: 1px;
@@ -23,104 +24,125 @@
         flex-flow: column nowrap;
         justify-content: center;
         border-radius: 10px;
-      }
+    }
 
-      h2 {
+    h2 {
         width: 60%;
         text-align: left;
         font-size: 1.2rem;
         border-style: none;
         border-width: 0px;
         box-shadow: 0;
-      }
+    }
 
-      p {
+    p {
         width: 80%;
         text-align: center;
         font-size: 1.2rem;
-      }
+    }
 
-      #p_name {
+    #p_name {
         width: 60%;
         font-size: 1.2em;
         border-radius: 4px;
         box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
-      }
+    }
 
-      #insert {
-        background-color: #1c3458;
+    #insert {
+        background-color: #BDBDBD;
         font-size: 1.4rem;
         font-weight: 700;
         padding: 10px 20px;
         color: #f1faee;
         border-style: none;
         border-radius: 50em;
-      }
+    }
 
-      #insert:hover {
+    #insert:hover {
         opacity: 0.8;
-      }
-
-      input::focus::placeholder {
-      color: transparent;
-      }
-
-      /*p_name:hover {
+    }
+    /*p_name:hover {
         border-radius: 4px;
         box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
         border: solid 1px blue;
       }*/
     </style>
-  </head>
-  <body>
-     <audio id="sound-file" preload="auto">
+</head>
+
+<body>
+    <audio id="sound-file" preload="auto">
         <source src="sounds/button_bomb.mp3" type="audio/mp3">
     </audio>
     <div class="login">
-    <h1><i class="fa fa-bomb fa-2x"></i>Real Bomb</h1>
-    <p>Plese enter your user name.</p>
-      <h2>Player name:</h2>
-      <input type="text" id="p_name" placeholder="example: hoge"　 onfocus="this.placeholder=''" onblur="this.placeholder="example: hoge" ><br>
-      <input type="button" id="insert" value="START" >
+        <h1><i class="fa fa-bomb fa-2x"></i>Real Bomb</h1>
+        <p>Plese enter your user name.</p>
+        <h2>Player name:</h2>
+        <input type="text" id="p_name" placeholder="example: hoge" onfocus="this.placeholder=''" onblur="this.placeholder='example: hoge'">
+        <br>
+        <input type="button" id="insert" value="START">
     </div>
-
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI "></script>
     <script type="text/javascript">
-
-      $( function insert() {
+    $(function insert() {
         console.log($('#insert'));
-            $( '#insert' ) .click(
-              function() {
+        $('#insert').click(
+            function() {
                 $('#sound-file').get(0).play();
-                var hostUrl= '/insert';
+                var hostUrl = '/insert';
                 var name = document.getElementById("p_name");
                 var delay = 500;
                 $.ajax({
-                  url: hostUrl,
-                  type:'POST',
-                  dataType: 'json',
-                  data :{"name" : name.value, "pos" : {"lat":0.00000, "long":0.00000}},
+                    url: hostUrl,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { "name": name.value, "pos": { "lat": 0.00000, "long": 0.00000 } },
                 }).done(function(data) {
-                  console.log("ok");
-                  console.log(data);
-                  setTimeout(function() {
-                    location.href = "/attacker?" + "name=" + name.value;
-                  }, delay);
+                    console.log("ok");
+                    console.log(data);
+                    setTimeout(function() {
+                        location.href = "/attacker? " + "name=" + name.value;
+                    }, delay);
                 }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
-                  alert("error");
+                    alert("error");
                 })
-              });
-          } );
+            });
+    });
 
-      /* エンターキーが押された時の処理 */
-      $( '#p_name' ).keypress( function ( e ) {
-        if ( e.which == 13 ) {
-          $( '#insert' ).trigger("click");
-        return false;
+    /* エンターキーが押された時の処理 */
+    $('#p_name').keypress(function(e) {
+        if (e.which == 13) {
+          if(!isVaildName($(this).val())) {
+            return false ;
+          } else {
+            $('#insert').trigger("click");
+            return false;
+          }
         }
-      } );
+    });
+    //文字が入ってないときはstartボタンが押せない
+    var min_size = 1,
+        max_size = 50;
 
-  </script>
-  </body>
+    $('#p_name').bind('input', function() {
+                console.log(isVaildName($(this).val()));
+                if (!isVaildName($(this).val())) {
+                    $('#insert').prop("disabled", true);
+                    $('#insert').css({
+                        "background": "#BDBDBD",
+                    });
+                } else {
+                    $('#insert').prop("disabled", false);
+                    $('#insert').css({
+                        "background": "#1c3458",
+                    });
+                  }
+                });
+
+    function isVaildName (text) {
+      return (text.length >= min_size && text.length <= max_size);
+    }
+    </script>
+</body>
+
 </html>
