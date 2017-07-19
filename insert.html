@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>insert</title>
     <meta name="viewport" content="width=360,initial-scale=1">
+    <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <style media="screen">
       body {
         background-color: #e93741;
@@ -24,10 +25,19 @@
         border-radius: 10px;
       }
 
+      h2 {
+        width: 60%;
+        text-align: left;
+        font-size: 1.2rem;
+        border-style: none;
+        border-width: 0px;
+        box-shadow: 0;
+      }
+
       p {
         width: 80%;
         text-align: center;
-        font-size: 1.2em;
+        font-size: 1.2rem;
       }
 
       #p_name {
@@ -51,6 +61,10 @@
         opacity: 0.8;
       }
 
+      input::focus::placeholder {
+      color: transparent;
+      }
+
       /*p_name:hover {
         border-radius: 4px;
         box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
@@ -60,11 +74,12 @@
   </head>
   <body>
     <div class="login">
-      <p>player name</p>
-      <input type="text" id="p_name" value=""><br>
+    <h1><i class="fa fa-bomb fa-2x"></i>Real Bomb</h1>
+    <p>Plese enter your user name.</p>
+      <h2>Player name:</h2>
+      <input type="text" id="p_name" placeholder="example: hoge"　 onfocus="this.placeholder=''" onblur="this.placeholder="example: hoge" ><br>
       <input type="button" id="insert" value="START" >
     </div>
-
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
