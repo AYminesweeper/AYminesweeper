@@ -124,7 +124,7 @@
     var min_size = 1,
         max_size = 50;
 
-    $('#p_name').bind('input', function() {
+    var checkName = function() {
                 console.log(isVaildName($(this).val()));
                 if (!isVaildName($(this).val())) {
                     $('#insert').prop("disabled", true);
@@ -137,11 +137,17 @@
                         "background": "#1c3458",
                     });
                   }
-                });
+                };
+
+    $('#p_name').bind('input', checkName);
 
     function isVaildName (text) {
       return (text.length >= min_size && text.length <= max_size);
     }
+
+    window.onload = function() {
+      checkName;
+    };
     </script>
 </body>
 
