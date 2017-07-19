@@ -42,6 +42,7 @@ router.get('/attacker*', function(req, res) {
 
 router.get('/delete', function(req, res) { //データベースのカラムを全て削除
     db.run("DELETE FROM players");
+    res.render('index', { title: 'Database all colums deleted' });
 });
 
 router.get('/resetMines', function(req, res) { //保持している爆弾配列をリセット
