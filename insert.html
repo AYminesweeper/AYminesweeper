@@ -77,7 +77,7 @@
         <h1><i class="fa fa-bomb fa-2x"></i>Real Bomb</h1>
         <p>Plese enter your user name.</p>
         <h2>Player name:</h2>
-        <input type="text" id="p_name" placeholder="example: hoge" onfocus="this.placeholder=''" onblur="this.placeholder='example: hoge'">
+        <input type="text" id="p_name" placeholder="example: hoge" maxlength="25" onfocus="this.placeholder=''" onblur="this.placeholder='example: hoge'">
         <br>
         <input type="button" id="insert" value="START">
     </div>
@@ -122,7 +122,7 @@
     });
     //文字が入ってないときはstartボタンが押せない
     var min_size = 1,
-        max_size = 50;
+        max_size = 25;
 
     var checkName = function() {
                 console.log(isVaildName($(this).val()));
