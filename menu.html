@@ -13,6 +13,9 @@
 </head>
 
 <body class="extinguisher-transition">
+    <audio id="sound-file" preload="auto">
+        <source src="sounds/button_bomb.mp3" type="audio/mp3">
+    </audio>
     <main class="cd-main-content">
         <div class="center">
             <h1>Real Bomb!!</h1>
@@ -25,17 +28,17 @@
             <h2>Mode Select</h2>
             <div class="mode">
                 <center>
-                    <a href="/defender" class="cd-btn defender">
-					Defender
-				</a>
-                    <div class="defender_space"></div>
+                    <a href = "defender" class="cd-btn defender">
+                        Defender
+                    </a>
+				<div class="defender_space"></div>
                 </center>
             </div>
             <div class="mode">
                 <center>
-                    <a href="/insert" class="cd-btn attacker">
-					Attacker
-					</a>
+                    <a href = "insert" class="cd-btn attacker">
+                        Attacker
+                    </a>
                     <div class="attacker_space"></div>
                 </center>
             </div>
@@ -53,98 +56,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script>
     if (!window.jQuery) document.write('<script src="javascripts/jquery-2.2.1-min.js"><\/script>');
+
     </script>
     <script src="javascripts/main.js"></script>
     <!-- Resource jQuery -->
-    <script>
-    function receive() {
-        var hostUrl = '/receive';
-        $.ajax({
-            url: hostUrl,
-            type: "post",
-            dataType: "json",
-            success: function(res) {
-                console.log(res);
-                display(res);
-            },
-            error: function(res) {
-                console.log("ERROR");
-            }
-        });
-    }
-
-    var players = [];
-    var player_limit = 10;
-    var def_exist = false;
-
-    function display(data) {
-        for (var i = 0; i < data.length; i++) {
-            var name = data[i].name;
-
-            if (players.indexOf(name) == -1) {
-                // nameがplayersに存在しない場合
-                players.push(name);
-            }
-        }
-        var dom1 = '<p>number<br>' + players.length + '/10</p>';
-        $(".mode .attacker_space").empty();
-        $(".mode .attacker_space").append(dom1);
-
-        if (def_exist) {
-            var dom2 = '<p>number<br>1/1</p>';
-        } else {
-            var dom2 = '<p>number<br>0/1</p>';
-        }
-        $(".mode .defender_space").empty();
-        $(".mode .defender_space").append(dom2);
-    }
-
-    function is_def_exist() {
-        var hostUrl = '/is_def_exist';
-        $.ajax({
-            url: hostUrl,
-            type: "post",
-            dataType: "json",
-            success: function(res) {
-                console.log(res);
-                def_exist = res.def_exist;
-                invalidate_button();
-            },
-            error: function(res) {
-                console.log("ERROR");
-            }
-        });
-    }
-
-    function invalidate_button() {
-        if (def_exist) {
-            console.log(def_exist);
-            $('a.defender').click(function() {
-                return false;
-            });
-            $(".defender").css({
-                "background": "#BDBDBD",
-            });
-        }
-
-        if (players.length > player_limit) {
-            $('a.attacker').click(function() {
-                return false;
-            });
-            $(".attacker").css({
-                "background": "#BDBDBD",
-            });
-        }
-    }
-
-    window.onload = function() {
-        is_def_exist();
-        receive();
-        setInterval(receive.bind(this), 5000);
-        setInterval(is_def_exist.bind(this), 5000);
-    }
-    
-    </script>
 </body>
 
 </html>
