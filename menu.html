@@ -28,7 +28,7 @@
                     <a href="/defender" class="cd-btn defender">
 					Defender
 				</a>
-				<div class="defender_space"></div>
+                    <div class="defender_space"></div>
                 </center>
             </div>
             <div class="mode">
@@ -84,21 +84,19 @@
             if (players.indexOf(name) == -1) {
                 // nameがplayersに存在しない場合
                 players.push(name);
-
-                var dom1 = '<p>player number<br>' + players.length + '/10</p>';
-                $(".mode .attacker_space").empty();
-                $(".mode .attacker_space").append(dom1);
-
-                if(def_exist){
-                	var dom2 = '<p>player number<br>1/1</p>';
-           		} else {
-           			var dom2 = '<p>player number<br>0/1</p>';
-           		}
-           		$(".mode .defender_space").empty();
-                $(".mode .defender_space").append(dom2);
-
             }
         }
+        var dom1 = '<p>number<br>' + players.length + '/10</p>';
+        $(".mode .attacker_space").empty();
+        $(".mode .attacker_space").append(dom1);
+
+        if (def_exist) {
+            var dom2 = '<p>number<br>1/1</p>';
+        } else {
+            var dom2 = '<p>number<br>0/1</p>';
+        }
+        $(".mode .defender_space").empty();
+        $(".mode .defender_space").append(dom2);
     }
 
     function is_def_exist() {
@@ -120,7 +118,7 @@
 
     function invalidate_button() {
         if (def_exist) {
-        	console.log(def_exist);
+            console.log(def_exist);
             $('a.defender').click(function() {
                 return false;
             });
@@ -139,14 +137,13 @@
         }
     }
 
-    window.onload = function(){
-    	is_def_exist();
-    	receive();
-    	setInterval(receive.bind(this), 5000);
-    	setInterval(is_def_exist.bind(this), 5000);
-
-	}
-
+    window.onload = function() {
+        is_def_exist();
+        receive();
+        setInterval(receive.bind(this), 5000);
+        setInterval(is_def_exist.bind(this), 5000);
+    }
+    
     </script>
 </body>
 
