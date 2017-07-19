@@ -8,30 +8,72 @@
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <link href='https://fonts.googleapis.com/css?family=Merriweather:400,700|Merriweather+Sans' rel='stylesheet' type='text/css'>
+    <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="stylesheets/reset.css">
     <!-- CSS reset -->
     <link rel="stylesheet" href="stylesheets/style.css">
     <!-- Resource style -->
     <style>
+    @import url(https://fonts.googleapis.com/css?family=Lato:400,700);
+    @import url(http://fonts.googleapis.com/earlyaccess/notosansjp.css);
+
     #map {
         width: 100vw;
         height: 80vh;
-        z-index: 10;
+        z-index: 1;
+        position:absolute;
+        /*box-shadow: 0px 0px 10px #000;*/
     }
+
+    .map_area img {
+        z-index: 2;
+        position:absolute;
+    }
+<<<<<<< HEAD
+    
+    .map_area .survivor {
+        z-index: 2;
+        position:absolute;
+        left: 30px;
+    }
+
     body {
         margin: 0;
     }
-
+    
+    .title {
+        weight: 100%;
+    }
+    
+    .title h1 {
+        weight: 30%;
+        font-size: 40px;
+        font-family: 'Lato', sans-serif;
+        border: 3px solid #CCC;
+        padding: 10px;
+        /*border-radius:10px;*/
+    }
+    
+    .title i {
+        font-size: 30px;
+    }
+    
     .survivor {
         font-size: 1.4em;
         display: inline-block;
         vertical-align: middle;
     }
-
+    
     .dom_space {
         width: 100%;
     }
 
+    .dom_space h1 {
+        text-shadow: 1px 2px 3px #808080;
+        font-size: 40px;
+        /*border:1px solid #000;*/
+    }
+    
     .win_effect {
         position: fixed;
         top: 0;
@@ -96,13 +138,23 @@
 </head>
 
 <body>
-    <div class="map_class" id="map"></div>
+    <div class="title">
+        <center>
+            <h1><i class="fa fa-bomb fa-5x"></i>Real Bomb</h1>
+        </center>
+    </div>
+    <div class="map_area">
+        <div class="map_class" id="map"></div>
+        <img src="images/icon1.gif" alt="" width=30vw height=50vh>
+        <div class="survivor"></div>
+    </div>
     <div class="lose_effect"></div>
     <div class="win_effect"></div>
     <div class="bomb_effect">
         <div class="extinguisher-transition">
             <div class="cd-main-content">
                 <a href="#modal-1" class="cd-modal-trigger" id="bomb"></a>
+                <div class="title"></div>
                 <div class="dom_space"></div>
                 <div class="add_map"></div>
                 <div class="img_space">
@@ -116,16 +168,16 @@
                 <a href="#0" class="modal-close">Close</a>
             </div>
             <div class="cd-transition-layer" data-frame="25">
-            <div class="bg-layer"></div>
+                <div class="bg-layer"></div>
             </div>
         </div>
     </div>
-
 
     <img class="survivor" src="images/icon1.gif" alt="" width=30vw height=50vh>
     <div class="survivor"></div>
 
     <div class="lose_effect"></div>
+
     <script type="text/javascript">
     //setting
     var cell = 10; //マスの数
@@ -333,7 +385,8 @@
     }
 
     function Bomb() {
-        var dom = '<h1>YOU ARE DEAD</h1>';
+        var dom1 = '<center><h1>YOU ARE DEAD</h1></center>';
+        var dom2 = '<center><h1><i class="fa fa-bomb fa-5x"></i>Real Bomb</h1></center>';
         var img = '<img class="survivor" src="images/icon1.gif" alt="" width=30vw height=50vh>';
 
         $("body").addClass("bomb_effect_on");
@@ -341,7 +394,8 @@
         $('.map_class').removeAttr('id')
 
         setTimeout(function() {
-            $(".cd-main-content .dom_space").append(dom);
+            $(".cd-main-content .dom_space").append(dom1);
+            $(".cd-main-content .title").append(dom2);
             $('.bomb_effect .add_map').attr('id', 'map');
             $(".cd-main-content .img_space").prepend(img);
             $(".cd-main-content .img_space .num_space").addClass("survivor");
