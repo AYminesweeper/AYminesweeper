@@ -47,12 +47,10 @@ router.get('/delete', function(req, res) { //データベースのカラムを�
 router.post('/set', function(req, res) {
     console.log("I'm in set.");
     console.log(req.body);
-
-    let pos = getSquarePos(convertRelative(req.body));
-    console.log(pos);
+    let pos = req.body;
     if (setMine(pos.x, pos.y)) {
         console.log(field);
-        res.send(true);
+        res.json(pos);
     } else {
         res.send(null);
     }

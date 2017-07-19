@@ -1,0 +1,111 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ポイント1",
+        "description": "テスト用ポイント１です。",
+        "type": "point",
+        "icon": "https://maps.multisoup.co.jp/exsample/common/img/ms/pin_01.png"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.75986270479419,
+          35.694634921909767,
+          0.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ポイント2",
+        "description": "テスト用ポイント２です。",
+        "type": "point",
+        "icon": "https://maps.multisoup.co.jp/exsample/common/img/ms/pin_04.png"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.7598636575899,
+          35.693392075631337,
+          0.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "mine1",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "description": "",
+        "type": "polygon1",
+        "icon": null
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              140.09901,
+              36.11204
+            ],
+            [
+              140.0993289,36.11204
+            ],
+            [
+             140.0993289,36.1118058
+            ],
+            [
+             140.09901,36.1118058
+            ],
+            [
+              140.09901,
+              36.11204
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "mine2",
+        "position": {
+          "x": 1,
+          "y": 0
+        },
+        "description": "",
+        "type": "polygon2",
+        "icon": null
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              140.0993289,36.11204
+            ],
+            [
+              140.09964779999999,36.11204
+            ],
+            [
+             140.09964779999999,36.1118058
+            ],
+            [
+              140.0993289,36.1118058
+            ],
+            [
+              140.0993289,36.11204
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

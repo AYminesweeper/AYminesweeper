@@ -8,6 +8,7 @@
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" charset="utf-8"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <style>
@@ -15,7 +16,7 @@
         width: 100vw;
         height: 80vh;
     }
-    
+
     body {
         margin: 0;
     }
@@ -30,11 +31,11 @@
         transform: translateX(-100%);
         transition: transform .2s;
     }
-    
+
     .win_effect_on .lose_effect {
         transform: translateX(0);
     }
-    
+
     .lose_effect {
         position: fixed;
         top: 0;
@@ -45,11 +46,19 @@
         transform: translateX(-100%);
         transition: transform .2s;
     }
-    
+
     .lose_effect_on .lose_effect {
         transform: translateX(0);
     }
-    
+
+    .bomb_num p {
+        font-size: 18px;
+    }
+
+    .bomb_num p i {
+        font-size: 35px;
+    }
+
     @media only screen and (max-width: 640px) {
         #map-canvas {
             width: 50%;
@@ -66,6 +75,11 @@
     <!--ダイアログの内容-->
     <div id="start-dialog" title="GAME START">
     </div>
+    <div class="bomb_num">
+        <p>
+            <i class="fa fa-bomb fa-fw" aria-hidden="true"></i>
+        </p>
+    </div>
     <script type="text/javascript">
     //setting
     var cell = 10; //マスの数
@@ -73,17 +87,43 @@
     var low = 36.109698; //右下点の緯度
     var left = 140.09901; //左上点の経度
     var right = 140.102199; //右下点の経度
-    var latlng = [36.109899, 140.10176]; //爆弾設置
 
+    var map; //google mapのインスタンス
+    var bomb_count = 10; //bombの個数
+    var markers = new google.maps.MVCArray(); //プレーヤーの位置のマーカー配列
 
-    var map;
-    var send_pos;
+    initialize();
 
+    function initialize() {
 
+        var start_dialog = function() {
+            setTimeout(function() {
+                $(function() {
+                    $("#start-dialog").html("<p><span>爆弾を設置して下さい！</span></p>")
+                    $("#start-dialog").dialog({
+                        modal: true,
+                        buttons: {
+                            OK: function() {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                });
+            }, 1000);
+        };
+
+        google.maps.event.addDomListener(window, 'load', initMap(start_dialog));
+        setInterval(receive.bind(this), 5000); // init 関数のcallback
+
+        //ボムの数をセット
+        $(".bomb_num p").append("x " + bomb_count);
+
+        var canvas = document.getElementById("canvas");
+
+    }
 
     function initMap(callback) {
         // 緯度・経度を変数に格納
-        //var mapLatLng = new google.maps.LatLng(36.109651, 140.101704);
         var centerposition = new google.maps.LatLng(36.110732, 140.100619);
 
         // マップオプションを変数に格納
@@ -191,7 +231,20 @@
         var poly2 = new google.maps.Polyline(PolylineOptions2);
         poly2.setMap(map);
 
-        google.maps.event.addListener(map, 'click', setListener);
+        //地雷パネルN
+        map.data.loadGeoJson('json/minemarker.json');
+        map.data.setStyle({
+            fillColor: '#0000ff',
+            fillOpacity: 0.01,
+            strokeWeight: 0.5,
+            clickable: true,
+            zIndex: 1
+        });
+
+
+        map.data.addListener('click', setMineListener);
+        //イベント追加
+        //google.maps.event.addListener(map, 'click', setListener);
         google.maps.event.addDomListener(window, 'resize', function() {
             map.panTo(centerposition);
         });
@@ -199,6 +252,60 @@
         if (callback) {
             callback();
         }
+    }
+
+    function isBombAvailable(bomb_count) {
+        return (bomb_count > 0);
+    }
+
+    function setMineListener(event) {
+        console.log(event.feature.getProperty('name'));
+        console.log(event.feature.getProperty('position').x);
+        console.log(event.feature.getProperty('position').y);
+
+        if (isBombAvailable(bomb_count)) {
+            var hostUrl = '/set';
+            var x = event.feature.getProperty('position').x;
+            var y = event.feature.getProperty('position').y;
+
+            $.ajax({
+                url: hostUrl,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    "x": x,
+                    "y": y
+                },
+                success: function(res) {
+                    console.log("set: Success");
+                    console.log(res);
+                    //押された場所の色の変更
+                    changeCellColor(event);
+                    //ボムの数を変更
+                    bomb_count--;
+                    displayBombNum(bomb_count);
+                },
+                error: function(res) {
+                    console.log("set: Error");
+                    //console.log(res);
+                }
+            });
+        }
+    }
+
+    function changeCellColor(event) {
+        map.data.overrideStyle(event.feature, {
+            fillColor: '#ff0000',
+            fillOpacity: 0.5,
+            strokeWeight: 0,
+            clickable: false,
+            zIndex: 1
+        });
+    }
+
+    function displayBombNum(bomb_count) {
+        var dom = '<i class="fa fa-bomb fa-fw" aria-hidden="true"></i> x' + bomb_count;
+        $(".bomb_num p").html(dom);
     }
 
     function setListener(event) {
@@ -217,14 +324,13 @@
             success: function(res) {
                 console.log("set: Success");
                 console.log(res);
+                changeColorCell(res);
             },
             error: function(res) {
                 console.log("set: Error");
                 //console.log(res);
             }
         });
-
-        console.log(latlng);
     }
 
     function receive() {
@@ -255,9 +361,6 @@
         });
     }
 
-    //var info = new Array();
-    var markers = new google.maps.MVCArray();
-
     function markPos(pos_data) {
         markers.forEach(function(marker) {
             marker.setMap(null);
@@ -274,43 +377,10 @@
                 title: name,
                 icon: icon
             });
-
             marker.setMap(map);
             markers.push(marker);
-
-            /*
-            var _i = new google.maps.InfoWindow({
-                map: map,
-                content: name,
-                disableAutoPan: true,
-                position: pos
-            });
-
-            if(info[arrCount]){
-              info[arrCount].close();
-            }
-            info[arrCount] = _i;
-            info[arrCount].open(marker.getMap(), marker);
-            */
-
         }
     }
-
-    var start_dialog = function() {
-        setTimeout(function() {
-            $(function() {
-                $("#start-dialog").html("<p><span>爆弾を設置して下さい！</span></p>")
-                $("#start-dialog").dialog({
-                    modal: true,
-                    buttons: {
-                        OK: function() {
-                            $(this).dialog("close");
-                        }
-                    }
-                });
-            });
-        }, 1000);
-    };
 
     function Win() {
         $("body").addClass("win_effect_on");
@@ -319,13 +389,6 @@
     function Lose() {
         $("body").addClass("lose_effect_on");
     }
-
-
-    google.maps.event.addDomListener(window, 'load', initMap(start_dialog));
-
-    setInterval(receive.bind(this), 5000); // init 関数のcallback
-
-    var canvas = document.getElementById("canvas");
     </script>
 </body>
 
