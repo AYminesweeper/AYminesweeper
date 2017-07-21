@@ -67,6 +67,7 @@
     }
 
     .win_effect {
+        z-index: 5;
         position: fixed;
         top: 0;
         left: 0;
@@ -77,12 +78,12 @@
         transition: transform .2s;
     }
 
-    .win_effect_on .lose_effect {
-        margin: 0;
+    .win_effect_on .win_effect {
         transform: translateX(0);
     }
 
     .lose_effect {
+        z-index: 5;
         position: fixed;
         top: 0;
         left: 0;
@@ -120,7 +121,6 @@
     }
 
     .bomb {
-      z-index: 5;
       position: fixed;
       top: 20vh;
       left: 80vw;
@@ -142,7 +142,6 @@
 
     .wrap {
       position: fixed;
-      z-index: 1;
       background-color: rgba(0, 0, 0, 0.8);
     }
 
