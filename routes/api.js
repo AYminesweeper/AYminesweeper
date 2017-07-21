@@ -114,7 +114,6 @@ router.post('/update', function(req, res) {
             isAttackerWin(getSquarePos(R_pos));
         } else {
             res.json({ msg: "failed" });
-            res.send(true);
         }
     });
 });
