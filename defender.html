@@ -18,40 +18,40 @@
         height: 90vh;
         z-index: 1;
     }
-    
+
     .map_area {
         width: 100vw;
         height: 90vh;
         position: relative;
     }
-    
+
     .map_area .survivor {
         z-index: 2;
         position: absolute;
         bottom: 30px;
         left: 10px;
     }
-    
+
     .survivor img {
         float: left;
     }
-    
+
     .survivor .howMany {
         float: left;
         font-size: 1.4em;
         padding-top: 10px;
         margin: 0;
     }
-    
+
     body {
         margin: 0;
     }
-    
+
     .title {
         width: 100%;
         margin: 0px;
     }
-    
+
     .title h1 {
         font-family: 'Bungee Shade', cursive;
         height: 10vh;
@@ -61,11 +61,11 @@
         margin: 0px;
         box-sizing: border-box;
     }
-    
+
     .title i {
         font-size: 30px;
     }
-    
+
     .win_effect {
         position: fixed;
         top: 0;
@@ -76,11 +76,11 @@
         transform: translateX(-100%);
         transition: transform .2s;
     }
-    
+
     .win_effect_on .lose_effect {
         transform: translateX(0);
     }
-    
+
     .lose_effect {
         position: fixed;
         top: 0;
@@ -91,26 +91,26 @@
         transform: translateX(-100%);
         transition: transform .2s;
     }
-    
+
     .lose_effect_on .lose_effect {
         transform: translateX(0);
     }
-    
+
     .map_area .bomb_num {
         z-index: 2;
         position: absolute;
         bottom: 10px;
         right: 10px;
     }
-    
+
     .bomb_num p {
         font-size: 18px;
     }
-    
+
     .bomb_num p i {
         font-size: 35px;
     }
-    
+
     @media only screen and (max-width: 640px) {
         #map-canvas {
             width: 50%;
@@ -121,6 +121,9 @@
 </head>
 
 <body>
+<audio id="sound-file" preload="auto" loop>
+        <source src="sounds/bgm.mp3" type="audio/mp3">
+    </audio>
     <div class="title">
         <center>
             <h1><i class="fa fa-bomb fa-5x fa-spin"></i>Real Bomb</h1>
@@ -179,6 +182,8 @@
 
         //ボムの数をセット
         $(".bomb_num p").append("x " + bomb_count);
+        //bgm
+        $('#sound-file').get(0).play();
 
         var canvas = document.getElementById("canvas");
 
