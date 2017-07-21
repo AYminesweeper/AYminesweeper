@@ -12,15 +12,60 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiT4RlnaJjLrUQemtR-OsUHXVg_iJ6iLI"></script>
     <style>
+    @import url('https://fonts.googleapis.com/css?family=Bungee+Shade');
     #map {
         width: 100vw;
-        height: 80vh;
+        height: 90vh;
+        z-index: 1;
     }
-
+    
+    .map_area {
+        width: 100vw;
+        height: 90vh;
+        position: relative;
+    }
+    
+    .map_area .survivor {
+        z-index: 2;
+        position: absolute;
+        bottom: 30px;
+        left: 10px;
+    }
+    
+    .survivor img {
+        float: left;
+    }
+    
+    .survivor .howMany {
+        float: left;
+        font-size: 1.4em;
+        padding-top: 10px;
+        margin: 0;
+    }
+    
     body {
         margin: 0;
     }
-
+    
+    .title {
+        width: 100%;
+        margin: 0px;
+    }
+    
+    .title h1 {
+        font-family: 'Bungee Shade', cursive;
+        height: 10vh;
+        font-weight: normal;
+        font-size: 6.5vh;
+        /*border: 3px solid #CCC;*/
+        margin: 0px;
+        box-sizing: border-box;
+    }
+    
+    .title i {
+        font-size: 30px;
+    }
+    
     .win_effect {
         position: fixed;
         top: 0;
@@ -31,11 +76,11 @@
         transform: translateX(-100%);
         transition: transform .2s;
     }
-
+    
     .win_effect_on .lose_effect {
         transform: translateX(0);
     }
-
+    
     .lose_effect {
         position: fixed;
         top: 0;
@@ -46,19 +91,26 @@
         transform: translateX(-100%);
         transition: transform .2s;
     }
-
+    
     .lose_effect_on .lose_effect {
         transform: translateX(0);
     }
-
+    
+    .map_area .bomb_num {
+        z-index: 2;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+    
     .bomb_num p {
         font-size: 18px;
     }
-
+    
     .bomb_num p i {
         font-size: 35px;
     }
-
+    
     @media only screen and (max-width: 640px) {
         #map-canvas {
             width: 50%;
@@ -69,16 +121,26 @@
 </head>
 
 <body>
-    <div id="map"></div>
+    <div class="title">
+        <center>
+            <h1><i class="fa fa-bomb fa-5x fa-spin"></i>Real Bomb</h1>
+        </center>
+    </div>
+    <div class="map_area">
+        <div id="map"></div>
+        <div class="survivor">
+            <img class src="images/icon1.gif" alt="" width=30vw height=50vh>
+        </div>
+        <div class="bomb_num">
+            <p>
+                <i class="fa fa-bomb fa-fw" aria-hidden="true"></i>
+            </p>
+        </div>
+    </div>
     <div class="lose_effect"></div>
     <div class="win_effect"></div>
     <!--ダイアログの内容-->
     <div id="start-dialog" title="GAME START">
-    </div>
-    <div class="bomb_num">
-        <p>
-            <i class="fa fa-bomb fa-fw" aria-hidden="true"></i>
-        </p>
     </div>
     <script type="text/javascript">
     //setting
@@ -138,11 +200,56 @@
             streetViewControl: false,
             disableDoubleClickZoom: true,
             styles: [{
+                "featureType": "water",
+                "stylers": [{
+                    "visibility": "on"
+                }, {
+                    "hue": "#00ffff"
+                }, {
+                    "saturation": -41
+                }, {
+                    "lightness": -50
+                }]
+            }, {
+                "featureType": "landscape",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#c5b1a3"
+                }, {
+                    "saturation": -26
+                }, {
+                    "lightness": 57
+                }]
+            }, {
+                "featureType": "poi",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#788d92"
+                }, {
+                    "saturation": -55
+                }]
+            }, {
+                "featureType": "road",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#808080"
+                }]
+            }, {
+                "featureType": "road",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#808080"
+                }]
+            }, {
                 "elementType": "labels",
                 "stylers": [{
                     "visibility": "off"
                 }]
+            }, {
+                "featureType": "administrative.province",
+                "elementType": "geometry.stroke"
             }]
+
         };
         // マップオブジェクト作成
         map = new google.maps.Map(
@@ -352,6 +459,7 @@
                 } else {
                     console.log(res);
                     markPos(res);
+                    survivor(res);
                     //survivor(res);
                 }
             },
@@ -380,6 +488,18 @@
             marker.setMap(map);
             markers.push(marker);
         }
+    }
+
+    function survivor(players) {
+        var counter = 0;
+        $(".howMany").remove();
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].is_survive) {
+                counter += 1;
+            }
+        }
+        var dom = '<p class="howMany"> ×' + counter + '</p>';
+        $(".survivor").append(dom);
     }
 
     function Win() {
