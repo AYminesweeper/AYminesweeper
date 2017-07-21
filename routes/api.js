@@ -175,7 +175,7 @@ function updateValue(lat, long, name, callback) {
                 v_long = long - p_long;
 
             /* v_lat,v_longが2マスのサイズを越えた場合updateしない */
-            if ((p_lat == 0 && p_long == 0) || (v_lat < square_sizeY && v_long < 2*square_sizeX)) {
+            if ((p_lat == 0 && p_long == 0) || (v_lat < 100*square_sizeY && v_long < 100*square_sizeX)) {
                 db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
                 callback(true);
             } else {
