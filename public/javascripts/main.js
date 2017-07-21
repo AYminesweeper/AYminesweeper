@@ -131,7 +131,7 @@ jQuery(document).ready(function($) {
             type: "post",
             dataType: "json",
             success: function(res) {
-                console.log(res);
+                //console.log(res);
                 def_exist = res.def_exist;
                 invalidate_button();
                 display();
@@ -143,7 +143,7 @@ jQuery(document).ready(function($) {
     }
 
     function invalidate_button() {
-        console.log("def_exist: " + def_exist);
+        //console.log("def_exist: " + def_exist);
         if (def_exist) {
             $(".defender").css({
                 "background": "#BDBDBD",

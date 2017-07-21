@@ -20,6 +20,7 @@ var field = createField();
 var winner = null;
 var def_exist = false;
 
+
 console.log(field);
 
 var goal = { "x": 0, "y": 0 };
@@ -42,8 +43,8 @@ router.get('/attacker*', function(req, res) {
 });
 
 router.post('/is_def_exist', function(req, res) {
-         res.json({ def_exist : def_exist });
- });
+    res.json({ def_exist: def_exist });
+});
 
 router.get('/delete', function(req, res) { //データベースのカラムを全て削除
     db.run("DELETE FROM players");
@@ -51,8 +52,8 @@ router.get('/delete', function(req, res) { //データベースのカラムを�
 });
 
 router.get('/resetMines', function(req, res) { //保持している爆弾配列をリセット
-    for (var i = 0 ; i < square_num; i++) {
-        for (var j = 0 ; j < square_num; j++) {
+    for (var i = 0; i < square_num; i++) {
+        for (var j = 0; j < square_num; j++) {
             field[i][j] = 0;
         }
     }
@@ -98,19 +99,24 @@ router.post('/update', function(req, res) {
     //console.log(R_pos);
     //console.log(getSquarePos(R_pos));
 
-    updateValue(lat, long, name);
-    console.log(getSquarePos(R_pos));
-    if (isMine(getSquarePos(R_pos))) {
-        db.run("UPDATE players SET is_survive = 0 WHERE name = ?", name);
+    updateValue(lat, long, name, function(result) {
+        console.log(result);
+        if (result) {
+            console.log(getSquarePos(R_pos));
+            if (isMine(getSquarePos(R_pos))) {
+                db.run("UPDATE players SET is_survive = 0 WHERE name = ?", name);
 
-        isDefenderWin()
-        res.json({ msg: "bomb" });
-    } else {
-        res.send(true);
-    }
-
-    isAttackerWin(getSquarePos(R_pos));
-
+                isDefenderWin()
+                res.json({ msg: "bomb" });
+            } else {
+                res.send(true);
+            }
+            isAttackerWin(getSquarePos(R_pos));
+        } else {
+            res.json({ msg: "failed" });
+            res.send(true);
+        }
+    });
 });
 
 router.post('/receive', function(req, res) {
@@ -158,7 +164,7 @@ function convertRelative(pos) {
     return { "long": R_long, "lat": R_lat };
 }
 
-function updateValue(lat, long, name) {
+function updateValue(lat, long, name, callback) {
     console.log("I'm in updateValue")
 
     db.get("SELECT lat as p_lat, long as p_long FROM players where name = ?", name, function(err, row) {
@@ -172,15 +178,16 @@ function updateValue(lat, long, name) {
             /* v_lat,v_longが1マスのサイズを越えた場合updateしない */
             if ((p_lat == 0 && p_long == 0) || (v_lat < square_sizeY && v_long < square_sizeX)) {
                 db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
+                callback(true);
             } else {
                 console.log("位置情報のブレが発生 (☝︎ ՞ਊ ՞)☝︎");
+                callback(false);
             }
         } else {
             console.log("Cat not update");
+            callback(false);
         }
     });
-
-
 }
 
 /* 相対座標から現在のマスの座標を取得 */
