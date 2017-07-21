@@ -560,7 +560,7 @@
             map: map
         };
 
-        sendPosData();
+        //sendPosData();
 
         //アイコンを表示させる記述
         //var marker = new google.maps.Marker(markerOptions);
@@ -613,7 +613,7 @@
     google.maps.event.addDomListener(window, 'load', initMap(
         function() {
             setInterval(receive.bind(this), 5000);
-            //setInterval(sendPosData.bind(this), 5000);
+            setInterval(sendPosData.bind(this), 1000);
         }
     ));
     //}

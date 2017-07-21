@@ -114,7 +114,6 @@ router.post('/update', function(req, res) {
             isAttackerWin(getSquarePos(R_pos));
         } else {
             res.json({ msg: "failed" });
-            res.send(true);
         }
     });
 });
@@ -175,8 +174,8 @@ function updateValue(lat, long, name, callback) {
             let v_lat = lat - p_lat, //v_lat : latの変化量
                 v_long = long - p_long;
 
-            /* v_lat,v_longが1マスのサイズを越えた場合updateしない */
-            if ((p_lat == 0 && p_long == 0) || (v_lat < square_sizeY && v_long < square_sizeX)) {
+            /* v_lat,v_longが2マスのサイズを越えた場合updateしない */
+            if ((p_lat == 0 && p_long == 0) || (v_lat < 100*square_sizeY && v_long < 100*square_sizeX)) {
                 db.run("UPDATE players SET lat = ?, long = ? WHERE name = ?", lat, long, name);
                 callback(true);
             } else {
