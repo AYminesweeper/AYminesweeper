@@ -409,6 +409,8 @@
                 if (res['msg'] == 'bomb' && bomb_flug) {
                     Bomb();
                     bomb_flug = false;
+                } else if (res['msg'] == 'failed') {
+                    alert("update failed");
                 }
             },
             error: function(res) {
