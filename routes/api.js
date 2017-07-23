@@ -46,6 +46,11 @@ router.post('/is_def_exist', function(req, res) {
     res.json({ def_exist: def_exist });
 });
 
+router.post('/restart', function(req, res) {
+    db.run("DELETE FROM players");
+    res.sendFile(path.resolve("./menu.html"));  
+});
+
 router.get('/delete', function(req, res) { //データベースのカラムを全て削除
     db.run("DELETE FROM players");
     res.render('index', { title: 'Database all colums deleted' });
