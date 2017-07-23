@@ -167,7 +167,7 @@
 </head>
 
 <body>
-<audio id="sound-file" preload="auto" loop>
+<audio id="bgm_sound" preload="auto" loop>
         <source src="sounds/bgm.mp3" type="audio/mp3">
     </audio>
     <div class="title">
@@ -235,7 +235,7 @@
         //ボムの数をセット
         $(".bomb_num p").append("x " + bomb_count);
         //bgm
-        $('#sound-file').get(0).play();
+        $('"bgm_sound').get(0).play();
 
         var canvas = document.getElementById("canvas");
 
@@ -322,7 +322,7 @@
         var n = low;
         for (var i = 1; i < points1.length; i += 2) {
             points1_lat[i] = n;
-            points1_lat[i + 1] = n;
+        points1_lat[i + 1] = n;
             if (n == high) {
                 n = low;
             } else {
