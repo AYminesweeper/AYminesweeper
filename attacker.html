@@ -522,6 +522,49 @@
         var poly2 = new google.maps.Polyline(PolylineOptions2);
         poly2.setMap(map);
 
+        //地雷パネルN
+        map.data.loadGeoJson('json/minemarker.json');
+
+        map.data.setStyle(function(feature) {
+            if (feature.getProperty('type') === 'point') {
+                // マーカーのスタイル
+                return ({
+                    icon: {
+                        url: feature.getProperty('icon'),
+                        scaledSize: new google.maps.Size(32, 32)
+                    }
+                });
+            } else if (feature.getProperty('type') === 'polyline') {
+                // ポリラインのスタイル
+                return ({
+                    strokeColor: '#0000ff',
+                    strokeWeight: 2,
+                    clickable: true,
+                    zIndex: 1
+                });
+            } else if (feature.getProperty('type') === 'polygon') {
+                // ポリゴンのスタイル
+                return ({
+                    fillColor: '#0000ff',
+                    fillOpacity: 0.01,
+                    strokeWeight: 0.5,
+                    clickable: true,
+                    zIndex: 1
+                });
+            } else if (feature.getProperty('type') === 'polygon_goal') {
+                //ゴール
+                console.log(feature.getProperty('position'));
+                return ({
+                    fillColor: '#df5656',
+                    fillOpacity: 0.5,
+                    strokeWeight: 0.5,
+                    clickable: false,
+                    zIndex: 1
+                });
+            }
+        });
+
+
         if (callback) {
             callback();
         }
