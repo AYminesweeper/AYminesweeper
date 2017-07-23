@@ -48,6 +48,7 @@ router.post('/is_def_exist', function(req, res) {
 
 router.post('/restart', function(req, res) {
     db.run("DELETE FROM players");
+    field = createField();
     res.sendFile(path.resolve("./menu.html"));  
 });
 
