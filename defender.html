@@ -121,47 +121,79 @@
     }
 
     .bomb {
-      position: fixed;
-      top: 20vh;
-      left: 80vw;
-      /* 画像置換 */
-      background: url(images/bomb.png);
-      height: 0;
-      overflow: hidden;
-      padding-top: 96px;
-      width: 96px;
-      /* アニメーション */
-      animation: sprite1 10s steps(7, start) infinite;
+        position: fixed;
+        top: 20vh;
+        left: 80vw;
+        /* 画像置換 */
+        background: url(images/bomb.png);
+        height: 0;
+        overflow: hidden;
+        padding-top: 96px;
+        width: 96px;
+        /* アニメーション */
+        animation: sprite1 10s steps(7, start) infinite;
     }
 
     .bomb2 {
-      margin: 0;
-      top: 60vh;
-      left: 5vw;
+        margin: 0;
+        top: 60vh;
+        left: 5vw;
     }
 
     .wrap {
-      position: fixed;
-      background-color: rgba(0, 0, 0, 0.8);
+        position: fixed;
+        background-color: rgba(0, 0, 0, 0.8);
     }
 
     @keyframes sprite1 {
-      0%   {background-position: 0 0;}
-      12.4% {background-position: -672px 0;}
-      12.5%   {background-position: 0 -96px;}
-      24.9% {background-position: -672px -96px;}
-      25%   {background-position: 0 -192px;}
-      37.4% {background-position: -672px -192px;}
-      37.5%   {background-position: 0 -288px;}
-      49.9% {background-position: -672px -288px;}
-      50%   {background-position: 0 -384px;}
-      62.4% {background-position: -672px -384px;}
-      62.5%   {background-position: 0 -480px;}
-      74.9% {background-position: -672px -480px;}
-      75%   {background-position: 0 -576px;}
-      87.4% {background-position: -672px -576px;}
-      87.5%   {background-position: 0 -672px;}
-      100% {background-position: -672px -672px;}
+        0% {
+            background-position: 0 0;
+        }
+        12.4% {
+            background-position: -672px 0;
+        }
+        12.5% {
+            background-position: 0 -96px;
+        }
+        24.9% {
+            background-position: -672px -96px;
+        }
+        25% {
+            background-position: 0 -192px;
+        }
+        37.4% {
+            background-position: -672px -192px;
+        }
+        37.5% {
+            background-position: 0 -288px;
+        }
+        49.9% {
+            background-position: -672px -288px;
+        }
+        50% {
+            background-position: 0 -384px;
+        }
+        62.4% {
+            background-position: -672px -384px;
+        }
+        62.5% {
+            background-position: 0 -480px;
+        }
+        74.9% {
+            background-position: -672px -480px;
+        }
+        75% {
+            background-position: 0 -576px;
+        }
+        87.4% {
+            background-position: -672px -576px;
+        }
+        87.5% {
+            background-position: 0 -672px;
+        }
+        100% {
+            background-position: -672px -672px;
+        }
     }
 
     .win_effect .restart_button {
@@ -225,8 +257,14 @@
 </head>
 
 <body>
-<audio id="sound-file" preload="auto" loop>
+    <audio id="bgm_sound" preload="auto" loop>
         <source src="sounds/bgm.mp3" type="audio/mp3">
+    </audio>
+     <audio id="win_sound" preload="auto">
+        <source src="sounds/win.mp3" type="audio/mp3">
+    </audio>
+    <audio id="lose_sound" preload="auto">
+        <source src="sounds/lose.mp3" type="audio/mp3">
     </audio>
     <div class="title">
         <center>
@@ -273,6 +311,7 @@
     var map; //google mapのインスタンス
     var bomb_count = 10; //bombの個数
     var markers = new google.maps.MVCArray(); //プレーヤーの位置のマーカー配列
+    var receiveInterval; //receiveInterval
 
     initialize();
 
@@ -295,12 +334,13 @@
         };
 
         google.maps.event.addDomListener(window, 'load', initMap(start_dialog));
-        setInterval(receive.bind(this), 5000); // init 関数のcallback
+
+        receiveInterval = setInterval(receive.bind(this), 5000); // init 関数のcallback
 
         //ボムの数をセット
         $(".bomb_num p").append("x " + bomb_count);
         //bgm
-        $('#sound-file').get(0).play();
+        $('#bgm_sound').get(0).play();
 
         var canvas = document.getElementById("canvas");
 
@@ -573,11 +613,15 @@
                 if (res["winner"] == "defender") {
                     console.log(res);
                     console.log("defender win");
+
                     Win();
+                    clearInterval(receiveInterval);
                 } else if (res['winner'] == 'attacker') {
                     console.log(res);
                     console.log("attacker win");
+                    $('#bgm_sound').get(0).pause();
                     Lose();
+                    clearInterval(receiveInterval);
                 } else {
                     console.log(res);
                     markPos(res);
@@ -632,17 +676,29 @@
 
     function Win() {
         $("body").addClass("win_effect_on");
+        $('#bgm_sound').get(0).pause();
+        $('#win_sound').get(0).load();
+        var delay = 300;
+        setTimeout(function() {
+            $('#win_sound').get(0).play();
+        }, delay);
     }
 
     function Lose() {
         $("body").addClass("lose_effect_on");
+        $('#lose_sound').get(0).load();
+        var delay = 300;
+        setTimeout(function() {
+            $('#lose_sound').get(0).play();
+        }, delay);
     }
 
     var canvas_win = document.getElementById("canvas_win");
     var ctx_win = canvas_win.getContext("2d");
     ctx_win.canvas.width = window.innerWidth;
     ctx_win.canvas.height = window.innerHeight;
-    var w = canvas_win.width, h = canvas_win.height;
+    var w = canvas_win.width,
+        h = canvas_win.height;
 
     var img_red = new Image();
     var img_yellow = new Image();
@@ -663,126 +719,128 @@
     var players_blue = [];
 
     function imageLoaded() {
-      //ctx.drawImage(img, 0, 0);
-      for (var i=0; i<5; i++) {
-        //１３個作るだけ
-        var red = new Player();
-        var yellow = new Player();
-        var green = new Player();
-        var blue = new Player();
-        //ctx.drawImage(img, p.x, p.y);
-        //console.log(p);
+        //ctx.drawImage(img, 0, 0);
+        for (var i = 0; i < 5; i++) {
+            //１３個作るだけ
+            var red = new Player();
+            var yellow = new Player();
+            var green = new Player();
+            var blue = new Player();
+            //ctx.drawImage(img, p.x, p.y);
+            //console.log(p);
 
-        players_red.push(red);
-        players_yellow.push(yellow);
-        players_green.push(green);
-        players_blue.push(blue);
-      }
-      update(); //繰り返し処理を呼ぶ
+            players_red.push(red);
+            players_yellow.push(yellow);
+            players_green.push(green);
+            players_blue.push(blue);
+        }
+        update(); //繰り返し処理を呼ぶ
     }
 
     function update() {
-      ctx_win.clearRect(0,0,w,h);
-      //繰り返し処理
-      for (var i=0; i<5; i++) {
-        var red = players_red[i];
-        red.x -= red.vx;
-        red.y += red.vy;
-        if(red.x < 0) {
-          red.x = w;
+        ctx_win.clearRect(0, 0, w, h);
+        //繰り返し処理
+        for (var i = 0; i < 5; i++) {
+            var red = players_red[i];
+            red.x -= red.vx;
+            red.y += red.vy;
+            if (red.x < 0) {
+                red.x = w;
+            }
+            if (red.x > w) {
+                red.x = 0;
+            }
+            if (red.y > h / 2 + 100) {
+                red.y = h / 2 - 200;
+            }
+            ctx_win.drawImage(img_red, red.x, red.y);
         }
-        if(red.x > w) {
-          red.x = 0;
-        }
-        if(red.y > h/2+100) {
-          red.y = h/2-200;
-        }
-        ctx_win.drawImage(img_red, red.x, red.y);
-      }
 
-      for (var i=0; i<5; i++) {
-        var green = players_green[i];
-        green.x -= green.vx;
-        green.y += green.vy;
-        if(green.x < 0) {
-          green.x = w;
+        for (var i = 0; i < 5; i++) {
+            var green = players_green[i];
+            green.x -= green.vx;
+            green.y += green.vy;
+            if (green.x < 0) {
+                green.x = w;
+            }
+            if (green.x > w) {
+                green.x = 0;
+            }
+            if (green.y > h / 2 + 100) {
+                green.y = h / 2 - 200;
+            }
+            ctx_win.drawImage(img_green, green.x, green.y);
         }
-        if(green.x > w) {
-          green.x = 0;
-        }
-        if(green.y > h/2+100) {
-          green.y = h/2-200;
-        }
-        ctx_win.drawImage(img_green, green.x, green.y);
-      }
 
-      for (var i=0; i<5; i++) {
-        var yellow = players_yellow[i];
-        yellow.x -= yellow.vx;
-        yellow.y += yellow.vy;
-        if(yellow.x < 0) {
-          yellow.x = w;
+        for (var i = 0; i < 5; i++) {
+            var yellow = players_yellow[i];
+            yellow.x -= yellow.vx;
+            yellow.y += yellow.vy;
+            if (yellow.x < 0) {
+                yellow.x = w;
+            }
+            if (yellow.x > w) {
+                yellow.x = 0;
+            }
+            if (yellow.y > h / 2 + 100) {
+                yellow.y = h / 2 - 200;
+            }
+            ctx_win.drawImage(img_yellow, yellow.x, yellow.y);
         }
-        if(yellow.x > w) {
-          yellow.x = 0;
-        }
-        if(yellow.y > h/2+100) {
-          yellow.y = h/2-200;
-        }
-        ctx_win.drawImage(img_yellow, yellow.x, yellow.y);
-      }
 
-      for (var i=0; i<5; i++) {
-        var blue = players_blue[i];
-        blue.x -= blue.vx;
-        blue.y += blue.vy;
-        if(blue.x < 0) {
-          blue.x = w;
-        }if(blue.x > w) {
-          blue.x = 0;
+        for (var i = 0; i < 5; i++) {
+            var blue = players_blue[i];
+            blue.x -= blue.vx;
+            blue.y += blue.vy;
+            if (blue.x < 0) {
+                blue.x = w;
+            }
+            if (blue.x > w) {
+                blue.x = 0;
+            }
+            if (blue.y > h / 2 + 100) {
+                blue.y = h / 2 - 200;
+            }
+            ctx_win.drawImage(img_blue, blue.x, blue.y);
         }
-        if(blue.y > h/2+100) {
-          blue.y = h/2-200;
-        }
-        ctx_win.drawImage(img_blue, blue.x, blue.y);
-      }
         //ctx.drawImage(img_yellow, p.x, p.y);
         //ctx.drawImage(img_green, p.x, p.y);
         //ctx.font = 'bold 40px Century Gothic';
         //ctx.fillText("You Win", 100, 100, 1000);
-      ctx_win.font= 'bold 100px Century Gothic';
-      ctx_win.strokeStyle = '#00A3D9';
-      ctx_win.lineWidth = 6;
-      ctx_win.textAlign = "center";
-      ctx_win.lineJoin = 'round';
-      ctx_win.fillStyle = '#fff';
-      ctx_win.strokeText('You Win',w/2,h/2,w);
-      ctx_win.fillText('You Win',w/2,h/2,w);
+        ctx_win.font = 'bold 100px Century Gothic';
+        ctx_win.strokeStyle = '#00A3D9';
+        ctx_win.lineWidth = 6;
+        ctx_win.textAlign = "center";
+        ctx_win.lineJoin = 'round';
+        ctx_win.fillStyle = '#fff';
+        ctx_win.strokeText('You Win', w / 2, h / 2, w);
+        ctx_win.fillText('You Win', w / 2, h / 2, w);
 
-      requestAnimationFrame(update);
+        requestAnimationFrame(update);
     }
 
     function Player() {
-      this.x = Math.random() * w;
-      this.y = Math.random() * h;
-      this.vx = Math.random()-0.5; //*4 - 2
-      this.vy = Math.random();
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.vx = Math.random() - 0.5; //*4 - 2
+        this.vy = Math.random();
     }
 
     var canvas_lose = document.getElementById("canvas_lose");
     var ctx_lose = canvas_lose.getContext("2d");
     ctx_lose.canvas.width = window.innerWidth;
     ctx_lose.canvas.height = window.innerHeight;
-    var w = canvas_lose.width, h = canvas_lose.height;
+    var w = canvas_lose.width,
+        h = canvas_lose.height;
 
-    ctx_lose.font= 'bold 100px Century Gothic';
+    ctx_lose.font = 'bold 100px Century Gothic';
     ctx_lose.strokeStyle = 'indigo';
     ctx_lose.lineWidth = 6;
     ctx_lose.textAlign = "center";
     ctx_lose.lineJoin = 'round';
     ctx_lose.fillStyle = 'mediumpurple';
-    ctx_lose.strokeText('You Lose',w/2,h/2,w);
-    ctx_lose.fillText('You Lose',w/2,h/2,w);
+    ctx_lose.strokeText('You Lose', w / 2, h / 2, w);
+    ctx_lose.fillText('You Lose', w / 2, h / 2, w);
     </script>
 </body>
 
