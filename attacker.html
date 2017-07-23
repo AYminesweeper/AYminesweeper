@@ -251,6 +251,9 @@
 </head>
 
 <body>
+    <audio id="sound-file" preload="auto" loop>
+        <source src="sounds/bgm.mp3" type="audio/mp3">
+    </audio>
     <div class="title">
         <center>
             <h1><i class="fa fa-bomb fa-5x fa-spin"></i>Real Bomb</h1>
@@ -526,6 +529,7 @@
                 console.log(res);
                 if (res['msg'] == 'bomb' && bomb_flug) {
                     Bomb();
+                    clearInterval(updateInterval);
                     bomb_flug = false;
                 } else if (res['msg'] == 'failed') {
                     alert("update failed");
@@ -676,10 +680,15 @@
 
         script.onload = function() {
             */
+
+    var updateInterval;
+
     google.maps.event.addDomListener(window, 'load', initMap(
         function() {
             setInterval(receive.bind(this), 5000);
-            setInterval(sendPosData.bind(this), 2000);
+            updateInterval = setInterval(sendPosData.bind(this), 2000);
+            //bgm
+            $('#sound-file').get(0).play();
         }
     ));
     //}
