@@ -228,8 +228,14 @@
     <audio id="bgm_sound" preload="auto" loop>
         <source src="sounds/bgm.mp3" type="audio/mp3">
     </audio>
-    <audio id="explosion_sound" preload="auto"s>
+    <audio id="explosion_sound" preload="auto">
         <source src="sounds/explosion.mp3" type="audio/mp3">
+    </audio>
+    <audio id="win_sound" preload="auto">
+        <source src="sounds/win.mp3" type="audio/mp3">
+    </audio>
+    <audio id="lose_sound" preload="auto">
+        <source src="sounds/lose.mp3" type="audio/mp3">
     </audio>
     <div class="title">
         <center>
@@ -474,10 +480,13 @@
                     console.log(res);
                     console.log("defender win");
                     Lose();
+                    clearInterval(receiveInterval);
+
                 } else if (res['winner'] == 'attacker') {
                     console.log(res);
                     console.log("attacker win");
                     Win();
+                    clearInterval(receiveInterval);
                 }
             },
             error: function(res) {
@@ -617,10 +626,20 @@
 
     function Win() {
         $("body").addClass("win_effect_on");
+        $('#win_sound').get(0).load();
+        var delay = 300;
+        setTimeout(function() {
+            $('#win_sound').get(0).play();
+        }, delay);
     }
 
     function Lose() {
         $("body").addClass("lose_effect_on");
+        $('#lose_sound').get(0).load();
+        var delay = 300;
+        setTimeout(function() {
+            $('#lose_sound').get(0).play();
+        }, delay);
     }
 
     function Bomb() {
@@ -655,10 +674,11 @@
             */
 
     var updateInterval;
+    var receiveInterval;
 
     google.maps.event.addDomListener(window, 'load', initMap(
         function() {
-            setInterval(receive.bind(this), 5000);
+            receiveInterval = setInterval(receive.bind(this), 5000);
             updateInterval = setInterval(sendPosData.bind(this), 2000);
             //bgm
             $('#bgm_sound').get(0).play();
