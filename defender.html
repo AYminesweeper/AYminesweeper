@@ -225,6 +225,9 @@
 </head>
 
 <body>
+<audio id="sound-file" preload="auto" loop>
+        <source src="sounds/bgm.mp3" type="audio/mp3">
+    </audio>
     <div class="title">
         <center>
             <h1><i class="fa fa-bomb fa-5x fa-spin"></i>Real Bomb</h1>
@@ -246,15 +249,14 @@
         <canvas id="canvas_lose"></canvas>
       </div>
       <div class="restart_button">
-        <button class="restart" type="button" name="restart">Restart</button>
-      </div>
+        <a href="/restart" class="restart">Restart</a>
       <div class="bomb"></div>
       <div class="bomb bomb2"></div>
     </div>
     <div class="win_effect">
       <canvas id="canvas_win"></canvas>
       <div class="restart_button">
-        <button class="restart" type="button" name="restart">Restart</button>
+        <a href="/restart" class="restart">Restart</a>
       </div>
     </div>
     <!--ダイアログの内容-->
@@ -297,6 +299,8 @@
 
         //ボムの数をセット
         $(".bomb_num p").append("x " + bomb_count);
+        //bgm
+        $('#sound-file').get(0).play();
 
         var canvas = document.getElementById("canvas");
 
