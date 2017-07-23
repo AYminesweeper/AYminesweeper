@@ -4,13 +4,30 @@
     {
       "type": "Feature",
       "properties": {
+        "name": "goal",
+        "description": "goal",
+        "icon": "/images/goal.png",
+        "type": "point"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.09916945,
+          36.1119229,
+          0.0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "name": "mine1",
         "position": {
           "x": 0,
           "y": 0
         },
         "description": "",
-        "type": "polygon1",
+        "type": "polygon_goal",
         "icon": null
       },
       "geometry": {
@@ -50,7 +67,7 @@
           "y": 0
         },
         "description": "",
-        "type": "polygon2",
+        "type": "polygon",
         "icon": null
       },
       "geometry": {
