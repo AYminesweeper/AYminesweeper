@@ -545,7 +545,6 @@
                     console.log("defender win");
                     Lose();
                     clearInterval(receiveInterval);
-
                 } else if (res['winner'] == 'attacker') {
                     console.log(res);
                     console.log("attacker win");
@@ -690,6 +689,7 @@
 
     function Win() {
         $("body").addClass("win_effect_on");
+        $('#bgm_sound').get(0).pause();
         $('#win_sound').get(0).load();
         var delay = 300;
         setTimeout(function() {
@@ -699,6 +699,7 @@
 
     function Lose() {
         $("body").addClass("lose_effect_on");
+        $('#bgm_sound').get(0).pause();
         $('#lose_sound').get(0).load();
         var delay = 300;
         setTimeout(function() {

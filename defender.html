@@ -614,13 +614,15 @@
                 if (res["winner"] == "defender") {
                     console.log(res);
                     console.log("defender win");
+
                     Win();
-                    clearInterval(receiveInterval   );
+                    clearInterval(receiveInterval);
                 } else if (res['winner'] == 'attacker') {
                     console.log(res);
                     console.log("attacker win");
+                    $('#bgm_sound').get(0).pause();
                     Lose();
-                    clearInterval(receiveInterval   );
+                    clearInterval(receiveInterval);
                 } else {
                     console.log(res);
                     markPos(res);
@@ -675,6 +677,7 @@
 
     function Win() {
         $("body").addClass("win_effect_on");
+        $('#bgm_sound').get(0).pause();
         $('#win_sound').get(0).load();
         var delay = 300;
         setTimeout(function() {
