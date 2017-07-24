@@ -632,6 +632,7 @@
 
     //var info = new Array();
     var markers = new google.maps.MVCArray();
+    var bomb_flugs = [];
 
     function markPos(pos_data) {
         markers.forEach(function(marker) {
@@ -644,18 +645,31 @@
             var name = pos_data[arrCount].name;
             var survive = pos_data[arrCount].is_survive;
             var img_num = '2';
+            var size = {x: 15, y: 30};
 
             if (name == g_name)
                 img_num = '1';
-            if (survive == 0)
+            if (survive == 0 && bomb_flugs.indexOf(arrCount) == -1){
+                img_num = '4';
+                console.log("marker test")
+                bomb_flugs.push(arrCount);
+                size.x = 40;
+                size.y = 40;
+            } else if(survive == 0){
                 img_num = '3';
+            }
 
-            var icon = new google.maps.MarkerImage('images/icon' + img_num + '.gif');
+            var icon = {
+                url : 'images/icon' + img_num + '.gif',
+                scaledSize : new google.maps.Size(size.x, size.y)
+            }
+
             var marker = new google.maps.Marker({
                 position: pos,
                 map: map,
                 title: name,
-                icon: icon
+                icon: icon,
+                optimized: false ,
             });
 
             marker.setMap(map);
