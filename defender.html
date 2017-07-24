@@ -327,6 +327,8 @@
                         buttons: {
                             OK: function() {
                                 $(this).dialog("close");
+                                //bgm
+                                $('#bgm_sound').get(0).play();
                             }
                         }
                     });
@@ -340,8 +342,6 @@
 
         //ボムの数をセット
         $(".bomb_num p").append("x " + bomb_count);
-        //bgm
-        $('#bgm_sound').get(0).play();
 
     }
 
