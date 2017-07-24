@@ -207,61 +207,61 @@
     }
 
     .win_effect .restart_button {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      text-align: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
     }
 
     .win_effect .restart {
-      background-color: transparent;
-      position: relative;
-      top: 85vh;
-      display: inline-block;
-      margin: 0;
-      padding: 0.3em 1em;
-      text-decoration: none;
-      color: #00A3D9;
-      border: solid 2px #00A3D9;
-      border-radius: 3px;
-      transition: .4s;
-      font-size: 1.5em;
+        background-color: transparent;
+        position: relative;
+        top: 85vh;
+        display: inline-block;
+        margin: 0;
+        padding: 0.3em 1em;
+        text-decoration: none;
+        color: #00A3D9;
+        border: solid 2px #00A3D9;
+        border-radius: 3px;
+        transition: .4s;
+        font-size: 1.5em;
     }
 
     .win_effect .restart:hover {
-      background-color: #00A3D9;
-      color: white;
+        background-color: #00A3D9;
+        color: white;
     }
 
     .lose_effect .restart_button {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      text-align: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
     }
 
     .lose_effect .restart {
-      background-color: transparent;
-      position: relative;
-      top: 85vh;
-      display: inline-block;
-      margin: 0;
-      padding: 0.3em 1em;
-      text-decoration: none;
-      color: white;
-      border: solid 2px white;
-      border-radius: 3px;
-      transition: .4s;
-      font-size: 1.5em;
+        background-color: transparent;
+        position: relative;
+        top: 85vh;
+        display: inline-block;
+        margin: 0;
+        padding: 0.3em 1em;
+        text-decoration: none;
+        color: white;
+        border: solid 2px white;
+        border-radius: 3px;
+        transition: .4s;
+        font-size: 1.5em;
     }
 
     .lose_effect .restart:hover {
-      background-color: indigo;
-      color: white;
+        background-color: indigo;
+        color: white;
     }
     </style>
     <!-- insert.htmlからGETで送られてきたnameを取得 -->
@@ -307,19 +307,19 @@
         </div>
     </div>
     <div class="lose_effect">
-      <div class="wrap">
-        <canvas id="canvas_lose"></canvas>
-      </div>
-      <div class="restart_button">
-        <a href="/restart" class="restart">Restart</a>
-      </div>
-      <div class="bomb"></div>
-      <div class="bomb bomb2"></div>
+        <div class="wrap">
+            <canvas id="canvas_lose"></canvas>
+        </div>
+        <div class="restart_button">
+            <a href="/restart" class="restart">Restart</a>
+        </div>
+        <div class="bomb"></div>
+        <div class="bomb bomb2"></div>
     </div>
     <div class="win_effect">
-      <canvas id="canvas_win"></canvas>
+        <canvas id="canvas_win"></canvas>
         <div class="restart_button">
-          <a href="/restart" class="restart">Restart</a>
+            <a href="/restart" class="restart">Restart</a>
         </div>
     </div>
     <div class="bomb_effect">
@@ -604,30 +604,32 @@
     }
 
     function sendPosData() {
-        var hostUrl = '/update';
-        $.ajax({
-            // url: "/",
-            url: hostUrl,
-            type: "post",
-            dataType: "json",
-            data: send_pos,
+        if (send_pos !== undefined) {
+            var hostUrl = '/update';
+            $.ajax({
+                // url: "/",
+                url: hostUrl,
+                type: "post",
+                dataType: "json",
+                data: send_pos,
 
-            success: function(res) {
-                console.log("sendPosData: Success");
-                console.log(res);
-                if (res['msg'] == 'bomb' && bomb_flug) {
-                    Bomb();
-                    clearInterval(updateInterval);
-                    bomb_flug = false;
-                } else if (res['msg'] == 'failed') {
-                    alert("update failed");
+                success: function(res) {
+                    console.log("sendPosData: Success");
+                    console.log(res);
+                    if (res['msg'] == 'bomb' && bomb_flug) {
+                        Bomb();
+                        clearInterval(updateInterval);
+                        bomb_flug = false;
+                    } else if (res['msg'] == 'failed') {
+                        alert("update failed");
+                    }
+                },
+                error: function(res) {
+                    console.log("sendPosData: Error");
+                    console.log(res);
                 }
-            },
-            error: function(res) {
-                console.log("sendPosData: Error");
-                console.log(res);
-            }
-        });
+            });
+        }
     }
 
     //var info = new Array();
@@ -645,23 +647,24 @@
             var name = pos_data[arrCount].name;
             var survive = pos_data[arrCount].is_survive;
             var img_num = '2';
-            var size = {x: 15, y: 30};
+            var size = { x: 10, y: 20 };
 
             if (name == g_name)
                 img_num = '1';
-            if (survive == 0 && bomb_flugs.indexOf(arrCount) == -1){
+            if (survive == 0 && bomb_flugs.indexOf(arrCount) == -1) {
                 img_num = '4';
                 console.log("marker test")
                 bomb_flugs.push(arrCount);
                 size.x = 40;
                 size.y = 40;
-            } else if(survive == 0){
+            } else if (survive == 0) {
                 img_num = '3';
+                size.x = 20;
             }
 
             var icon = {
-                url : 'images/icon' + img_num + '.gif',
-                scaledSize : new google.maps.Size(size.x, size.y)
+                url: 'images/icon' + img_num + '.gif',
+                scaledSize: new google.maps.Size(size.x, size.y)
             }
 
             var marker = new google.maps.Marker({
@@ -669,7 +672,7 @@
                 map: map,
                 title: name,
                 icon: icon,
-                optimized: false ,
+                optimized: false
             });
 
             marker.setMap(map);
