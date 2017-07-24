@@ -588,11 +588,13 @@
                     console.log("defender win");
                     Lose();
                     clearInterval(receiveInterval);
+                    clearInterval(updateInterval);
                 } else if (res['winner'] == 'attacker') {
                     console.log(res);
                     console.log("attacker win");
                     Win();
                     clearInterval(receiveInterval);
+                    clearInterval(updateInterval);
                 }
             },
             error: function(res) {
