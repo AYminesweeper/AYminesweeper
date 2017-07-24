@@ -51,11 +51,12 @@ router.get('/restart', function(req, res) {
     field = createField();
     def_exist = false;
     winner = null;
-    res.sendFile(path.resolve("./menu.html"));  
+    res.sendFile(path.resolve("./menu.html"));
 });
 
 router.get('/delete', function(req, res) { //データベースのカラムを全て削除
     db.run("DELETE FROM players");
+    def_exist = false;
     res.render('index', { title: 'Database all colums deleted' });
 });
 
