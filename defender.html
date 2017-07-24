@@ -283,20 +283,20 @@
         </div>
     </div>
     <div class="lose_effect">
-      <div class="wrap">
-        <canvas id="canvas_lose"></canvas>
-      </div>
-      <div class="restart_button">
-        <a href="/restart" class="restart">Restart</a>
-        <div class="bomb"></div>
-        <div class="bomb bomb2"></div>
-      </div>
+        <div class="wrap">
+            <canvas id="canvas_lose"></canvas>
+        </div>
+        <div class="restart_button">
+            <a href="/restart" class="restart">Restart</a>
+            <div class="bomb"></div>
+            <div class="bomb bomb2"></div>
+        </div>
     </div>
     <div class="win_effect">
-      <canvas id="canvas_win"></canvas>
-      <div class="restart_button">
-        <a href="/restart" class="restart">Restart</a>
-      </div>
+        <canvas id="canvas_win"></canvas>
+        <div class="restart_button">
+            <a href="/restart" class="restart">Restart</a>
+        </div>
     </div>
     <!--ダイアログの内容-->
     <div id="start-dialog" title="GAME START">
@@ -318,31 +318,14 @@
 
     function initialize() {
 
-        var start_dialog = function() {
-            setTimeout(function() {
-                $(function() {
-                    $("#start-dialog").html("<p><span>爆弾を設置して下さい！</span></p>")
-                    $("#start-dialog").dialog({
-                        modal: true,
-                        buttons: {
-                            OK: function() {
-                                $(this).dialog("close");
-                            }
-                        }
-                    });
-                });
-            }, 1000);
-        };
-
-        google.maps.event.addDomListener(window, 'load', initMap(start_dialog));
-
-        receiveInterval = setInterval(receive.bind(this), 5000); // init 関数のcallback
-
+        google.maps.event.addDomListener(window, 'load', initMap(
+            function() {
+                start_dialog();
+                receiveInterval = setInterval(receive.bind(this), 5000);
+            }
+        ));
         //ボムの数をセット
         $(".bomb_num p").append("x " + bomb_count);
-        //bgm
-        $('#bgm_sound').get(0).play();
-
     }
 
     function initMap(callback) {
@@ -541,9 +524,6 @@
             }
         });
 
-
-
-
         map.data.addListener('click', setMineListener);
         //イベント追加
         //google.maps.event.addListener(map, 'click', setListener);
@@ -554,6 +534,24 @@
         if (callback) {
             callback();
         }
+    }
+
+    function start_dialog() {
+        setTimeout(function() {
+            $(function() {
+                $("#start-dialog").html("<p><span>爆弾を設置して下さい！</span></p>")
+                $("#start-dialog").dialog({
+                    modal: true,
+                    buttons: {
+                        OK: function() {
+                            $(this).dialog("close");
+                            //bgm
+                            $('#bgm_sound').get(0).play();
+                        }
+                    }
+                });
+            });
+        }, 1000);
     }
 
     function isBombAvailable(bomb_count) {
@@ -666,7 +664,7 @@
         });
     }
 
-    var bomb_flugs = [];
+    var bomb_flags = [];
 
     function markPos(pos_data) {
         markers.forEach(function(marker) {
@@ -681,10 +679,10 @@
             var img_num = '1';
             var size = {x: 10, y: 20};
 
-            if (survive == 0 && bomb_flugs.indexOf(arrCount) == -1){
+            if (survive == 0 && bomb_flags.indexOf(arrCount) == -1){
                 img_num = '4';
                 console.log("marker test")
-                bomb_flugs.push(arrCount);
+                bomb_flags.push(arrCount);
                 size.x = 40;
                 size.y = 40;
             } else if (survive == 0){
@@ -702,7 +700,7 @@
                 map: map,
                 title: name,
                 icon: icon,
-                optimized: false 
+                optimized: false
             });
             marker.setMap(map);
             markers.push(marker);
