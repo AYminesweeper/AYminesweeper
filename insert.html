@@ -109,44 +109,48 @@
             });
     });
 
+    var enter_flag = true;
+
     /* エンターキーが押された時の処理 */
     $('#p_name').keypress(function(e) {
-        if (e.which == 13) {
-          if(!isVaildName($(this).val())) {
-            return false ;
-          } else {
-            $('#insert').trigger("click");
-            return false;
-          }
+        if (enter_flag) {
+            if (e.which == 13) {
+                if (!isVaildName($(this).val())) {
+                    return false;
+                } else {
+                    $('#insert').trigger("click");
+                    enter_flag = false;
+                    return false;
+                }
+            }
         }
     });
     //文字が入ってないときはstartボタンが押せない
     var min_size = 1,
         max_size = 25;
-
     var checkName = function() {
-                console.log(isVaildName($(this).val()));
-                if (!isVaildName($(this).val())) {
-                    $('#insert').prop("disabled", true);
-                    $('#insert').css({
-                        "background": "#BDBDBD",
-                    });
-                } else {
-                    $('#insert').prop("disabled", false);
-                    $('#insert').css({
-                        "background": "#1c3458",
-                    });
-                  }
-                };
+        console.log(isVaildName($(this).val()));
+        if (!isVaildName($(this).val())) {
+            $('#insert').prop("disabled", true);
+            $('#insert').css({
+                "background": "#BDBDBD",
+            });
+        } else {
+            $('#insert').prop("disabled", false);
+            $('#insert').css({
+                "background": "#1c3458",
+            });
+        }
+    };
 
     $('#p_name').bind('input', checkName);
 
-    function isVaildName (text) {
-      return (text.length >= min_size && text.length <= max_size);
+    function isVaildName(text) {
+        return (text.length >= min_size && text.length <= max_size);
     }
 
     window.onload = function() {
-      checkName;
+        checkName;
     };
     </script>
 </body>
