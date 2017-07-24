@@ -56,7 +56,9 @@ router.get('/restart', function(req, res) {
 
 router.get('/delete', function(req, res) { //データベースのカラムを全て削除
     db.run("DELETE FROM players");
+    field = createField();
     def_exist = false;
+    winner = null;
     res.render('index', { title: 'Database all colums deleted' });
 });
 
