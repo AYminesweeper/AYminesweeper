@@ -100,8 +100,9 @@
                 }).done(function(data) {
                     console.log("ok");
                     console.log(data);
+                    name = encodeURIComponent(name.value);;
                     setTimeout(function() {
-                        location.href = "/attacker?" + "name=" + name.value;
+                        location.href = "/attacker?" + "name=" + name;
                     }, delay);
                 }).fail(function(XMLHttpRequest, textStatus, errorThrown) {
                     alert("error");
