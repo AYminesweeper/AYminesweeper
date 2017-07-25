@@ -113,16 +113,18 @@ router.post('/update', function(req, res) {
     updateValue(lat, long, name, function(result) {
         console.log(result);
         if (result) {
-            console.log(getSquarePos(R_pos));
-            if (isMine(getSquarePos(R_pos))) {
+            var S_pos = getSquarePos(R_pos);
+            console.log(S_pos);
+            if (isMine(S_pos)) {
                 db.run("UPDATE players SET is_survive = 0 WHERE name = ?", name);
 
-                isDefenderWin()
+                isDefenderWin();
+                unsetMine(S_pos.x, S_pos.y);
                 res.json({ msg: "bomb" });
             } else {
                 res.send(true);
             }
-            isAttackerWin(getSquarePos(R_pos));
+            isAttackerWin(S_pos);
         } else {
             res.json({ msg: "failed" });
         }
@@ -159,6 +161,14 @@ function createField() {
 function setMine(x, y) {
     if (x >= 0 && x < square_num && y >= 0 && y < square_num) {
         field[y][x] = 1;
+        return true;
+    }
+    return false;
+}
+
+function unsetMine(x, y) {
+    if (x >= 0 && x < square_num && y >= 0 && y < square_num) {
+        field[y][x] = 0;
         return true;
     }
     return false;
