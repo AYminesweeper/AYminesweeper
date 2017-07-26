@@ -133,9 +133,9 @@
     }
 
     .bomb1 {
-      position: fixed;
-      top: 20vh;
-      left: 80vw;
+        position: fixed;
+        top: 20vh;
+        left: 80vw;
     }
 
     .bomb2 {
@@ -304,7 +304,9 @@
         </div>
     </div>
     <!--ダイアログの内容-->
-    <div id="start-dialog" title="GAME START">
+    <div id="start-dialog" title="SET MINES">
+    </div>
+    <div id="cue-dialog" title="GAME START">
     </div>
     <script type="text/javascript">
     //setting
@@ -325,9 +327,7 @@
 
         google.maps.event.addDomListener(window, 'load', initMap(
             function() {
-                start_dialog(function() {
-                    receiveInterval = setInterval(receive.bind(this), 5000);
-                });
+                start_dialog();
             }
         ));
         //ボムの数をセット
@@ -553,12 +553,46 @@
                             $(this).dialog("close");
                             //bgm
                             $('#bgm_sound').get(0).play();
+                            //callback();
+                        }
+                    }
+                });
+            });
+        }, 1000);
+    }
+
+    function cue_dialog(callback) {
+        setTimeout(function() {
+            $(function() {
+                $("#cue-dialog").html("<p><span>ゲームを開始します</span></p>")
+                $("#cue-dialog").dialog({
+                    modal: true,
+                    buttons: {
+                        OK: function() {
+                            $(this).dialog("close");
+                            cue();
                             callback();
                         }
                     }
                 });
             });
         }, 1000);
+    }
+
+    function cue() {
+        var hostUrl = '/start';
+        $.ajax({
+            url: hostUrl,
+            type: "post",
+            dataType: "json",
+
+            success: function(res) {
+                console.log(res);
+            },
+            error: function(res) {
+                console.log("ERROR");
+            }
+        });
     }
 
     function isBombAvailable(bomb_count) {
@@ -591,6 +625,12 @@
                     //ボムの数を変更
                     bomb_count--;
                     displayBombNum(bomb_count);
+                    if (bomb_count == 0) {
+                        console.log("I'm here");
+                        cue_dialog(function() {
+                            receiveInterval = setInterval(receive.bind(this), 5000);
+                        });
+                    }
                 },
                 error: function(res) {
                     console.log("set: Error");

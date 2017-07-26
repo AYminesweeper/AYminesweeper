@@ -18,6 +18,7 @@
     <!-- Resource style -->
     <style>
     @import url('https://fonts.googleapis.com/css?family=Bungee+Shade');
+
     #map {
         width: 100vw;
         height: 90vh;
@@ -49,6 +50,31 @@
 
     body {
         margin: 0;
+    }
+
+    .wait_notice {
+        position: fixed;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .wait_notice h1 {
+        font-family: arial, sans-serif;
+        font-size: 6.5vh;
+        color: #fff;
+        font-weight: bold;
+        position: absolute;
+        top: 45vh;
+        width: 100%;
+        height: 20%;
+        background: #464545;
+        opacity: 0.6;
+        text-align:center;
+        padding-top: 6vh;
     }
 
     .title {
@@ -126,7 +152,7 @@
         height: 100%;
         background-color: rgba(255, 255, 255, 0.6);
         transform: translateX(-100%);
-        transition: transform .05s;
+        transition: transform .1s;
     }
 
     .bomb_effect_on .bomb_effect {
@@ -270,7 +296,6 @@
     </style>
     <!-- insert.htmlからGETで送られてきたnameを取得 -->
     <script>
-
     function GetQueryString() {
         if (1 < document.location.search.length) {
             // 最初の1文字 (?記号) を除いた文字列を取得する
@@ -297,7 +322,6 @@
 
     var str = GetQueryString();
     console.log(str["name"]);
-
     </script>
 </head>
 
@@ -314,6 +338,9 @@
     <audio id="lose_sound" preload="auto">
         <source src="sounds/lose.mp3" type="audio/mp3">
     </audio>
+    <div class="wait_notice">
+        <h1>爆弾設置中</h1>
+    </div>
     <div class="title">
         <center>
             <h1><i class="fa fa-bomb fa-5x"></i>Real Bomb</h1>
@@ -383,6 +410,7 @@
     var send_pos;
     var g_name = str["name"];
     var bomb_flag = true;
+    var confirmInterval;
     var updateInterval;
     var receiveInterval;
 
@@ -394,12 +422,35 @@
             function() {
                 start_dialog(
                     function() {
-                        receiveInterval = setInterval(receive.bind(this), 5000);
-                        updateInterval = setInterval(sendPosData.bind(this), 2000);
+                        confirmInterval = setInterval(confirm.bind(this), 2000);
                     }
                 );
             }
         ));
+    }
+
+    function confirm() {
+        console.log("confirm");
+        var hostUrl = '/confirm_cue';
+        $.ajax({
+            url: hostUrl,
+            type: "post",
+            dataType: "json",
+
+            success: function(res) {
+                console.log(res);
+                if (res['msg'] == 'start') {
+                    receiveInterval = setInterval(receive.bind(this), 5000);
+                    updateInterval = setInterval(sendPosData.bind(this), 2000);
+                    $(".wait_notice").remove();
+                    clearInterval(confirmInterval);
+                }
+            },
+            error: function(res) {
+                console.log("ERROR");
+            }
+        });
+
     }
 
     function initMap(callback) {
@@ -745,7 +796,7 @@
         $(".survivor").append(dom);
     }
 
-    //var infoWindow = new google.maps.InfoWindow;
+    var infoWindow = new google.maps.InfoWindow;
     /* */
     function startWatchPosition() {
         //Try HTML5 geolocation.

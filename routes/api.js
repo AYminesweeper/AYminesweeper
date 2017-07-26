@@ -19,7 +19,7 @@ var dead_num; //ゲームオーバーになったプレイヤーの数
 var field = createField();
 var winner = null;
 var def_exist = false;
-
+var cue = false; //開始フラグ
 
 console.log(field);
 
@@ -85,6 +85,20 @@ router.post('/set', function(req, res) {
         res.send(null);
     }
 });
+
+router.post('/start', function(req, res) {
+    cue = true;
+    console.log(cue);
+    res.send(true);
+});
+
+router.post('/confirm_cue', function(req, res) {
+    if(cue){
+        res.json({ msg: "start" });
+    } else {
+        res.send(true);
+    }
+})
 
 router.post('/insert', function(req, res) {
     console.log("I'm in insert.");
