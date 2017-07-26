@@ -258,6 +258,13 @@
         background-color: indigo;
         color: white;
     }
+
+    .dead_player_box {
+      z-index: 5;
+      position: fixed;
+      padding-left: 20px;
+      top: 10vh;
+    }
     </style>
 </head>
 
@@ -280,6 +287,10 @@
         <div id="map"></div>
         <div class="survivor">
             <img class src="images/icon1.gif" alt="" width=30vw height=50vh>
+        </div>
+        <div class="dead_player_box">
+          <table class="dead_player">
+          </table>
         </div>
         <div class="bomb_num">
             <p>
@@ -756,14 +767,25 @@
 
     function survivor(players) {
         var counter = 0;
+        var player_died = [];
         $(".howMany").remove();
+        $(".dead_player tr").remove();
         for (var i = 0; i < players.length; i++) {
             if (players[i].is_survive) {
                 counter += 1;
             }
+            if (!players[i].is_survive) {
+                player_died[i-counter] = players[i].name;
+            }
         }
         var dom = '<p class="howMany"> ×' + counter + '</p>';
         $(".survivor").append(dom);
+
+
+        for (var i = 0; i < player_died.length; i++) {
+          var dom = '<tr><td><img src="images/icon3.gif" alt=""></td><td><p class="player_died">' + player_died[i] + '</p></td></tr>';
+          $("table").append(dom);
+        }
     }
 
     function Win() {
