@@ -254,7 +254,7 @@
       color: white;
     }
 
-    .dead_player {
+    .dead_player_box {
       z-index: 5;
       position: fixed;
       padding-left: 20px;
@@ -283,7 +283,10 @@
         <div class="survivor">
             <img class src="images/icon1.gif" alt="" width=30vw height=50vh>
         </div>
-        <div class="dead_player"><p class="player_died">takaya</p></div>
+        <div class="dead_player_box">
+          <table class="dead_player">
+          </table>
+        </div>
         <div class="bomb_num">
             <p>
                 <i class="fa fa-bomb fa-fw" aria-hidden="true"></i>
@@ -675,6 +678,7 @@
         var counter = 0;
         var player_died = [];
         $(".howMany").remove();
+        $(".dead_player tr").remove();
         for (var i = 0; i < players.length; i++) {
             if (players[i].is_survive) {
                 counter += 1;
@@ -688,8 +692,8 @@
 
 
         for (var i = 0; i < player_died.length; i++) {
-          var dom = '<p class="player_died">' + player_died[i] + ' was dead</p></br>';
-          $(".dead_player").append(dom);
+          var dom = '<tr><td><img src="images/icon3.gif" alt=""></td><td><p class="player_died">' + player_died[i] + '</p></td></tr>';
+          $("table").append(dom);
         }
     }
 
