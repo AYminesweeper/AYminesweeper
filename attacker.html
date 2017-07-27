@@ -383,7 +383,6 @@
                 <div class="map_area">
                     <div class="add_map"></div>
                     <div class="survivor_space">
-                        <img src="images/icon1.gif" alt="" width=30vw height=50vh>
                     </div>
                 </div>
             </div>
@@ -883,11 +882,11 @@
     function Bomb() {
         var dom1 = '<center><h1>YOU ARE DEAD</h1></center>';
         var dom2 = '<center><h1><i class="fa fa-bomb fa-5x"></i>Real Bomb</h1></center>';
+        var img = '<img src="images/icon1.gif" alt="" width=30vw height=50vh>';
 
-
+        $('.survivor').remove();
         $('body').addClass("bomb_effect_on");
         $('#bomb').trigger('click');
-        $('.survivor').remove();
         $('.map_class').removeAttr('id');
         $('#bgm_sound').get(0).pause();
         $('#explosion_sound').get(0).play();
@@ -895,6 +894,7 @@
         setTimeout(function() {
             $('.cd-main-content .title').append(dom2);
             $('.cd-main-content .dom_space').append(dom1);
+            $('.survivor_space').append(img);
             $('.bomb_effect .map_area .add_map').attr('id', 'map');
             $('#map').css('height', '80vh');
             $('.map_area').css('height', '80vh');
