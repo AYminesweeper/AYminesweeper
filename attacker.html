@@ -293,6 +293,12 @@
         background-color: indigo;
         color: white;
     }
+
+    .bomb_img {
+        width: 50vh;
+        height: 50vh;
+    }
+
     </style>
     <!-- insert.htmlからGETで送られてきたnameを取得 -->
     <script>
@@ -349,7 +355,7 @@
     <div class="map_area">
         <div class="map_class" id="map"></div>
         <div class="survivor">
-            <img class src="images/icon1.gif" alt="" width=30vw height=50vh>
+            <img src="images/icon1.gif" alt="" width=30vw height=50vh>
         </div>
     </div>
     <div class="lose_effect">
@@ -377,13 +383,14 @@
                 <div class="map_area">
                     <div class="add_map"></div>
                     <div class="survivor_space">
-                        <img class src="images/icon1.gif" alt="" width=30vw height=50vh>
+                        <img src="images/icon1.gif" alt="" width=30vw height=50vh>
                     </div>
                 </div>
             </div>
             <div class="cd-modal" id="modal-1">
                 <div class="modal-content">
                     <h2>Bomb!!</h2>
+                    <center><img src="/images/bakuhatsu.png" alt="爆発" class="bomb_img"></center>
                 </div>
                 <a href="#0" class="modal-close">Close</a>
             </div>
