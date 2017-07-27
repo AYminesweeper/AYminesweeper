@@ -884,9 +884,10 @@
         var dom1 = '<center><h1>YOU ARE DEAD</h1></center>';
         var dom2 = '<center><h1><i class="fa fa-bomb fa-5x"></i>Real Bomb</h1></center>';
 
-        $('.survivor').remove();
+
         $('body').addClass("bomb_effect_on");
         $('#bomb').trigger('click');
+        $('.survivor').remove();
         $('.map_class').removeAttr('id');
         $('#bgm_sound').get(0).pause();
         $('#explosion_sound').get(0).play();
