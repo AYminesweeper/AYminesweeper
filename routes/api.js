@@ -24,7 +24,7 @@ var cue = false; //開始フラグ
 console.log(field);
 
 //var goal = { "x": 0, "y": 0 };
-var goal = { "x": 0, "y": 0 };
+var goal = { "x": 3, "y": 0 };
 
 router.get('/', function(req, res) {
     res.sendFile(path.resolve("./menu.html"));
