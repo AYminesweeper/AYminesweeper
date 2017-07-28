@@ -14,7 +14,7 @@
             "type": "Point",
             "coordinates": [
                 140.10012615,
-                36.1119229,
+                36.1100493,
                 0.0
             ]
         }
@@ -148,7 +148,7 @@
           "y": 0
         },
         "description": "",
-        "type": "polygon_goal",
+        "type": "polygon",
         "icon": null
       },
       "geometry": {
@@ -3468,7 +3468,7 @@
           "y": 8
         },
         "description": "",
-        "type": "polygon",
+        "type": "polygon_goal",
         "icon": null
       },
       "geometry": {
